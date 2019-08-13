@@ -245,7 +245,7 @@ const char* Help::HelpStr()
 	static std::string help;
 	if (help.empty()) {
 		help += "\"Help\" <expr>";
-		help += "\n\t<exp> ::= <empty> | <matchstring> | <matchstring> <filter> | <matchstring> <filter> <form-type>";
+		help += "\n\t<expr> ::= <empty> | <matchstring> | <matchstring> <filter> | <matchstring> <filter> <form-type>";
 		help += "\n\t<matchstring> ::= <string> ; The string to filter results with";
 		help += "\n\t<filter> ::= <integer>";
 		help += "\n\t\t; 0 - All";
