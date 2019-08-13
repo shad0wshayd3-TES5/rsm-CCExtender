@@ -1,0 +1,4 @@
+LIBRARY	"CCExtender"
+EXPORTS
+SKSEPlugin_Query
+SKSEPlugin_Load
