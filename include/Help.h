@@ -17,7 +17,7 @@ namespace
 		static StopWatch* GetSingleton();
 
 		void Start();
-		void Milestone();
+		void TimeStamp();
 
 	private:
 		StopWatch() = default;
@@ -83,6 +83,7 @@ private:
 
 	private:
 		const RE::Setting* _setting;
+		std::string _name;
 	};
 
 
@@ -114,6 +115,7 @@ private:
 	static void ParseParams(RE::CommandInfo::ScriptData* a_scriptData, MatchString& a_matchString, Filter& a_filter, FormType& a_formType);
 	static bool Match(const std::string_view& a_haystack);
 	static std::string GetFullName(RE::TESForm* a_form);
+	static std::string GetEditorID(RE::TESForm* a_form);
 	static void EnumerateFunctions();
 	static void EnumerateFunctions(RE::CommandInfo* a_beg, RE::CommandInfo* a_end);
 	static void EnumerateSettings();

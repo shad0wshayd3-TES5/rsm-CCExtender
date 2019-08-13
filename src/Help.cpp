@@ -18,7 +18,7 @@ namespace
 	}
 
 
-	void StopWatch::Milestone()
+	void StopWatch::TimeStamp()
 	{
 		auto end = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> diff = end - _start;
@@ -118,7 +118,7 @@ bool Help::Exec(const RE::SCRIPT_PARAMETER* a_paramInfo, RE::CommandInfo::Script
 	}
 
 #if _DEBUG
-	stopWatch->Milestone();
+	stopWatch->TimeStamp();
 #endif
 
 	return true;
@@ -157,7 +157,7 @@ Help::FormInfo::FormInfo(RE::TESForm* a_form) :
 	_formID(a_form->formID),
 	_formType(a_form->formType)
 {
-	_editorID = a_form->GetEditorID();
+	_editorID = GetEditorID(a_form);
 	if (!_editorID.empty()) {
 		_editorID.push_back(' ');
 	}
@@ -194,15 +194,18 @@ void Help::FormInfo::Print() const
 
 
 Help::Setting::Setting(const RE::Setting* a_setting) :
-	_setting(a_setting)
+	_setting(a_setting),
+	_name("")
 {
 	assert(_setting);
+	std::string_view sv = a_setting->GetName();
+	_name = sv;
 }
 
 
 bool Help::Setting::operator<(const Setting& a_rhs) const
 {
-	return _stricmp(_setting->GetName(), a_rhs._setting->GetName()) < 0;
+	return _stricmp(_name.c_str(), a_rhs._name.c_str()) < 0;
 }
 
 
@@ -210,31 +213,30 @@ void Help::Setting::Print() const
 {
 	using Type = RE::Setting::Type;
 
-	auto name = _setting->GetName();
 	switch (_setting->GetType()) {
 	case Type::kBool:
-		CPrint("%s = ", name, (_setting->GetBool() ? "True" : "False"));
+		CPrint("%s = %s", _name.c_str(), (_setting->GetBool() ? "True" : "False"));
 		break;
 	case Type::kFloat:
-		CPrint("%s = %0.2f", name, _setting->GetFloat());
+		CPrint("%s = %0.2f", _name.c_str(), _setting->GetFloat());
 		break;
 	case Type::kSignedInteger:
-		CPrint("%s = %i", name, _setting->GetSInt());
+		CPrint("%s = %i", _name.c_str(), _setting->GetSInt());
 		break;
 	case Type::kColor:
 		{
 			auto color = _setting->GetColor();
-			CPrint("%s = R:%u G:%u B:%u A:%u)", name, color.red, color.green, color.blue, color.alpha);
+			CPrint("%s = R:%u G:%u B:%u A:%u)", _name.c_str(), color.red, color.green, color.blue, color.alpha);
 		}
 		break;
 	case Type::kString:
-		CPrint("%s = %s", name, _setting->GetString());
+		CPrint("%s = %s", _name.c_str(), _setting->GetString());
 		break;
 	case Type::kUnsignedInteger:
-		CPrint("%s = %u", name, _setting->GetUInt());
+		CPrint("%s = %u", _name.c_str(), _setting->GetUInt());
 		break;
 	default:
-		CPrint("%s = <UNKNOWN>", name);
+		CPrint("%s = <UNKNOWN>", _name.c_str());
 		break;
 	}
 }
@@ -314,7 +316,7 @@ bool Help::Match(const std::string_view& a_haystack)
 
 std::string Help::GetFullName(RE::TESForm* a_form)
 {
-	std::string result;
+	std::string_view result;
 
 	switch (a_form->formType) {
 	case RE::FormType::Dialogue:
@@ -329,7 +331,14 @@ std::string Help::GetFullName(RE::TESForm* a_form)
 		break;
 	}
 
-	return result;
+	return std::string(result);
+}
+
+
+std::string Help::GetEditorID(RE::TESForm* a_form)
+{
+	std::string_view result = a_form->GetEditorID();
+	return std::string(result);
 }
 
 
@@ -348,15 +357,21 @@ void Help::EnumerateFunctions()
 void Help::EnumerateFunctions(RE::CommandInfo* a_beg, RE::CommandInfo* a_end)
 {
 	std::string_view commandName;
+	std::string_view longNameView;
+	std::string_view shortNameView;
+	std::string_view helpTextView;
 	std::regex regex;
 	for (auto it = a_beg; it != a_end; ++it) {
+		longNameView = it->longName;
+		shortNameView = it->shortName;
+		helpTextView = it->helpText;
 		for (std::size_t j = 0; j < 2; ++j) {
 			switch (j) {
 			case 0:
-				commandName = it->longName;
+				commandName = longNameView;
 				break;
 			case 1:
-				commandName = it->shortName;
+				commandName = shortNameView;
 				break;
 			default:
 				commandName = "";
@@ -368,17 +383,19 @@ void Help::EnumerateFunctions(RE::CommandInfo* a_beg, RE::CommandInfo* a_end)
 			}
 
 			if (Match(commandName)) {
-				std::string shortName = it->shortName;
+				std::string longName(longNameView);
+
+				std::string shortName(shortNameView);
 				if (!shortName.empty()) {
 					shortName = " (" + shortName + ")";
 				}
 
-				std::string helpText = it->helpText;
+				std::string helpText(helpTextView);
 				if (!helpText.empty()) {
 					helpText = " -> " + helpText;
 				}
 
-				CPrint("%s%s%s", it->longName, shortName.c_str(), helpText.c_str());
+				CPrint("%s%s%s", longName.c_str(), shortName.c_str(), helpText.c_str());
 				break;
 			}
 		}
@@ -426,7 +443,7 @@ void Help::EnumerateGlobals()
 	auto& globals = dataHandler->GetFormArray<RE::TESGlobal>();
 	std::string editorID;
 	for (auto& global : globals) {
-		editorID = global->GetEditorID();
+		editorID = GetEditorID(global);
 		if (editorID.empty()) {
 			continue;
 		}
@@ -476,7 +493,7 @@ auto Help::GatherFormInfo(const FormType& a_formType)
 			continue;
 		}
 
-		editorID = form->GetEditorID();
+		editorID = GetEditorID(form);
 		fullName = GetFullName(form);
 
 		for (std::size_t j = 0; j < 2; ++j) {

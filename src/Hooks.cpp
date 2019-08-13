@@ -49,7 +49,9 @@ namespace Hooks
 
 		bool TESFormEx::Hook_SetEditorID(const char* a_str)
 		{
-			_idMap[formID].reset(new std::string(a_str));
+			if (a_str) {
+				_idMap[formID].reset(new std::string(a_str));
+			}
 			return true;
 		}
 

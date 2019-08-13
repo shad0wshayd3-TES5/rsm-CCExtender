@@ -146,7 +146,7 @@ FormStringTable::FormStringTable() :
 	Insert(RE::FormType::Armature, "ARMA");
 	Insert(RE::FormType::EncounterZone, "ECZN");
 	Insert(RE::FormType::Location, "LCTN");
-	Insert(RE::FormType::Message, "MESH");
+	Insert(RE::FormType::Message, "MESG");
 	Insert(RE::FormType::Ragdoll, "RGDL");
 	Insert(RE::FormType::DefaultObject, "DOBJ");
 	Insert(RE::FormType::LightingMaster, "LGTM");
