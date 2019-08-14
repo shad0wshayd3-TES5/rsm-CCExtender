@@ -12,9 +12,9 @@
 --- | ---
 <img width=120/> | <img width=120/>
 **Command** | `"> <file-name>"`
-**Expression** | `<file-name> ::= <string-no-space> | """ <string-with-space> """
-<img width=120/> | `<string-no-space> ::= <string> ; Cannot contain spaces
-<img width=120/> | `<string-with-space> ::= <string> | <string> " " <string-with-space> ; Can contain spaces`
+**Expression** | `<file-name> ::= <string-no-space> \| """ <string-with-space> """`
+<img width=120/> | `<string-no-space> ::= <string> ; Cannot contain spaces`
+<img width=120/> | `<string-with-space> ::= <string> \| <string> " " <string-with-space> ; Can contain spaces`
 **Example Usage** | `help belethor 4 > "output.txt"`
 **Description** | Pipes output from a console command to the indicated file. File names with spaces must be wrapped in parenthesis. Files are created relative to Skyrim's directory.
 **Command** | `"Help" <expr>`
