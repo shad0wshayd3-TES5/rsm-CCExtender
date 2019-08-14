@@ -183,7 +183,7 @@ FormStringTable::FormStringTable() :
 	if (_formTypeToStringMap.size() != to_underlying(RE::FormType::Max)) {
 		for (auto type = RE::FormType::None; type < RE::FormType::Max; ++type) {
 			if (_formTypeToStringMap.find(type) == _formTypeToStringMap.end()) {
-				_FATALERROR("Failed to insert %u", to_underlying(type));
+				_FATALERROR("Failed to insert %02X", to_underlying(type));
 			}
 		}
 		assert(false);

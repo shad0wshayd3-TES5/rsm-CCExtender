@@ -1,5 +1,4 @@
-﻿#include "skse64_common/BranchTrampoline.h"
-#include "skse64_common/skse_version.h"
+﻿#include "skse64_common/skse_version.h"
 
 #include "Commands.h"
 #include "Hooks.h"
@@ -62,10 +61,7 @@ extern "C" {
 			return false;
 		}
 
-		if (g_localTrampoline.Create(1024 * 1)) {
-			_MESSAGE("Local trmapoline creation successful");
-		} else {
-			_FATALERROR("Local trmapoline creation failed!\n");
+		if (!SKSE::AllocLocalTrampoline(1024 * 1) || !SKSE::AllocBranchTrampoline(1024 * 1)) {
 			return false;
 		}
 

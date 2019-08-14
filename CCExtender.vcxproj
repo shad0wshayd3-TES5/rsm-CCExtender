@@ -153,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Clear.cpp" />
+    <ClCompile Include="src\CommandPipe.cpp" />
     <ClCompile Include="src\Commands.cpp" />
     <ClCompile Include="src\FormStringTable.cpp" />
     <ClCompile Include="src\Help.cpp" />
@@ -161,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Clear.h" />
+    <ClInclude Include="include\CommandPipe.h" />
     <ClInclude Include="include\Commands.h" />
     <ClInclude Include="include\FormStringTable.h" />
     <ClInclude Include="include\Help.h" />

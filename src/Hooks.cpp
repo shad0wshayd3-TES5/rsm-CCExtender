@@ -4,6 +4,8 @@
 #include "skse64_common/SafeWrite.h"
 #include "xbyak/xbyak.h"
 
+#include "CommandPipe.h"
+
 
 namespace Hooks
 {
@@ -71,6 +73,7 @@ namespace Hooks
 	void Install()
 	{
 		TESFormEx::InstallHooks();
+		CommandPipe::InstallHooks();
 		_MESSAGE("Installed all hooks");
 	}
 }

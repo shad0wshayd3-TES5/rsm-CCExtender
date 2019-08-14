@@ -19,6 +19,9 @@
     <ClCompile Include="src\Hooks.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CommandPipe.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\version.h">
@@ -37,6 +40,9 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\Hooks.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CommandPipe.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
