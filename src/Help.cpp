@@ -199,7 +199,7 @@ Help::Setting::Setting(const RE::Setting* a_setting) :
 {
 	assert(_setting);
 	std::string_view sv = a_setting->GetName();
-	_name = sv;
+	_name = sv.empty() ? "" : sv;
 }
 
 
@@ -331,14 +331,14 @@ std::string Help::GetFullName(RE::TESForm* a_form)
 		break;
 	}
 
-	return std::string(result);
+	return std::string(result.empty() ? "" : result);
 }
 
 
 std::string Help::GetEditorID(RE::TESForm* a_form)
 {
 	std::string_view result = a_form->GetEditorID();
-	return std::string(result);
+	return std::string(result.empty() ? "" : result);
 }
 
 
@@ -357,40 +357,35 @@ void Help::EnumerateFunctions()
 void Help::EnumerateFunctions(RE::CommandInfo* a_beg, RE::CommandInfo* a_end)
 {
 	std::string_view commandName;
-	std::string_view longNameView;
-	std::string_view shortNameView;
-	std::string_view helpTextView;
-	std::regex regex;
+	std::string_view longNameV;
+	std::string_view shortNameV;
+	std::string_view helpTextV;
 	for (auto it = a_beg; it != a_end; ++it) {
-		longNameView = it->longName;
-		shortNameView = it->shortName;
-		helpTextView = it->helpText;
+		longNameV = it->longName;
+		shortNameV = it->shortName;
+		helpTextV = it->helpText;
 		for (std::size_t j = 0; j < 2; ++j) {
 			switch (j) {
 			case 0:
-				commandName = longNameView;
+				commandName = longNameV;
 				break;
 			case 1:
-				commandName = shortNameView;
+				commandName = shortNameV;
 				break;
 			default:
 				commandName = "";
 				break;
 			}
 
-			if (commandName.empty()) {
-				continue;
-			}
-
 			if (Match(commandName)) {
-				std::string longName(longNameView);
+				std::string longName(longNameV.empty() ? "" : longNameV);
 
-				std::string shortName(shortNameView);
+				std::string shortName(shortNameV.empty() ? "" : shortNameV);
 				if (!shortName.empty()) {
 					shortName = " (" + shortName + ")";
 				}
 
-				std::string helpText(helpTextView);
+				std::string helpText(helpTextV.empty() ? "" : helpTextV);
 				if (!helpText.empty()) {
 					helpText = " -> " + helpText;
 				}
@@ -444,10 +439,6 @@ void Help::EnumerateGlobals()
 	std::string editorID;
 	for (auto& global : globals) {
 		editorID = GetEditorID(global);
-		if (editorID.empty()) {
-			continue;
-		}
-
 		if (Match(editorID)) {
 			CPrint("%s = %0.2f", editorID.c_str(), global->value);
 		}
@@ -507,10 +498,6 @@ auto Help::GatherFormInfo(const FormType& a_formType)
 			default:
 				name = "";
 				break;
-			}
-
-			if (name.empty()) {
-				continue;
 			}
 
 			if (Match(name)) {
