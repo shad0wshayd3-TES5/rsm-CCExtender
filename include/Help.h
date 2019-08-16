@@ -36,6 +36,9 @@ namespace
 	constexpr auto NPOS = static_cast<std::size_t>(-1);
 	void kmp_table(const std::string_view& W, std::vector<std::size_t>& T);
 	bool kmp_search(const std::string_view& S, const std::string_view& W);
+
+	const char* safe_cstr(const char* a_str);
+	char* safe_cstr(char* a_str);
 }
 
 
@@ -114,8 +117,7 @@ private:
 	static void CPrint(const char* a_fmt, ...);
 	static void ParseParams(RE::CommandInfo::ScriptData* a_scriptData, MatchString& a_matchString, Filter& a_filter, FormType& a_formType);
 	static bool Match(const std::string_view& a_haystack);
-	static std::string GetFullName(RE::TESForm* a_form);
-	static std::string GetEditorID(RE::TESForm* a_form);
+	static std::string_view GetFullName(RE::TESForm* a_form);
 	static void EnumerateFunctions();
 	static void EnumerateFunctions(RE::CommandInfo* a_beg, RE::CommandInfo* a_end);
 	static void EnumerateSettings();

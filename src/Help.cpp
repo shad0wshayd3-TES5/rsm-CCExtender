@@ -76,6 +76,18 @@ namespace
 
 		return false;
 	}
+
+
+	const char* safe_cstr(const char* a_str)
+	{
+		return a_str ? a_str : "";
+	}
+
+
+	char* safe_cstr(char* a_str)
+	{
+		return a_str ? a_str : "";
+	}
 }
 
 
@@ -157,7 +169,7 @@ Help::FormInfo::FormInfo(RE::TESForm* a_form) :
 	_formID(a_form->formID),
 	_formType(a_form->formType)
 {
-	_editorID = GetEditorID(a_form);
+	_editorID = safe_cstr(a_form->GetEditorID());
 	if (!_editorID.empty()) {
 		_editorID.push_back(' ');
 	}
@@ -195,11 +207,9 @@ void Help::FormInfo::Print() const
 
 Help::Setting::Setting(const RE::Setting* a_setting) :
 	_setting(a_setting),
-	_name("")
+	_name(safe_cstr(a_setting->GetName()))
 {
 	assert(_setting);
-	std::string_view sv = a_setting->GetName();
-	_name = sv.empty() ? "" : sv;
 }
 
 
@@ -314,9 +324,9 @@ bool Help::Match(const std::string_view& a_haystack)
 }
 
 
-std::string Help::GetFullName(RE::TESForm* a_form)
+std::string_view Help::GetFullName(RE::TESForm* a_form)
 {
-	std::string_view result;
+	std::string_view result("");
 
 	switch (a_form->formType) {
 	case RE::FormType::Dialogue:
@@ -325,20 +335,16 @@ std::string Help::GetFullName(RE::TESForm* a_form)
 		{
 			auto fullName = a_form->As<RE::TESFullName*>();
 			if (fullName) {
-				result = fullName->GetName();
+				auto cstr = fullName->GetName();
+				if (cstr) {
+					result = cstr;
+				}
 			}
 		}
 		break;
 	}
 
-	return std::string(result.empty() ? "" : result);
-}
-
-
-std::string Help::GetEditorID(RE::TESForm* a_form)
-{
-	std::string_view result = a_form->GetEditorID();
-	return std::string(result.empty() ? "" : result);
+	return result;
 }
 
 
@@ -359,11 +365,9 @@ void Help::EnumerateFunctions(RE::CommandInfo* a_beg, RE::CommandInfo* a_end)
 	std::string_view commandName;
 	std::string_view longNameV;
 	std::string_view shortNameV;
-	std::string_view helpTextV;
 	for (auto it = a_beg; it != a_end; ++it) {
-		longNameV = it->longName;
-		shortNameV = it->shortName;
-		helpTextV = it->helpText;
+		longNameV = safe_cstr(it->longName);
+		shortNameV = safe_cstr(it->shortName);
 		for (std::size_t j = 0; j < 2; ++j) {
 			switch (j) {
 			case 0:
@@ -378,19 +382,17 @@ void Help::EnumerateFunctions(RE::CommandInfo* a_beg, RE::CommandInfo* a_end)
 			}
 
 			if (Match(commandName)) {
-				std::string longName(longNameV.empty() ? "" : longNameV);
-
-				std::string shortName(shortNameV.empty() ? "" : shortNameV);
+				std::string shortName(shortNameV);
 				if (!shortName.empty()) {
 					shortName = " (" + shortName + ")";
 				}
 
-				std::string helpText(helpTextV.empty() ? "" : helpTextV);
+				std::string helpText(safe_cstr(it->helpText));
 				if (!helpText.empty()) {
 					helpText = " -> " + helpText;
 				}
 
-				CPrint("%s%s%s", longName.c_str(), shortName.c_str(), helpText.c_str());
+				CPrint("%s%s%s", longNameV.data(), shortName.c_str(), helpText.c_str());
 				break;
 			}
 		}
@@ -438,7 +440,7 @@ void Help::EnumerateGlobals()
 	auto& globals = dataHandler->GetFormArray<RE::TESGlobal>();
 	std::string editorID;
 	for (auto& global : globals) {
-		editorID = GetEditorID(global);
+		editorID = safe_cstr(global->GetEditorID());
 		if (Match(editorID)) {
 			CPrint("%s = %0.2f", editorID.c_str(), global->value);
 		}
@@ -484,7 +486,7 @@ auto Help::GatherFormInfo(const FormType& a_formType)
 			continue;
 		}
 
-		editorID = GetEditorID(form);
+		editorID = safe_cstr(form->GetEditorID());
 		fullName = GetFullName(form);
 
 		for (std::size_t j = 0; j < 2; ++j) {
