@@ -24,7 +24,7 @@ Setting | Description
 **Example Usage** | `help belethor 4 > "output.txt"`
 **Description** | Pipes output from a console command to the indicated file. File names with spaces must be wrapped in parenthesis. Files are created relative to Skyrim's directory.
 <img width=120/> | <img width=120/>
-**Command** | `"<betacomment> <comment>"`
+**Command** | `<betacomment> <comment>`
 **Expression** | `<betacomment> ::= "BetaComment" \| "BC"`
 <img width=120/> | `<comment> ::= <string> ; The comment string`
 **Example Usage** | `bc "this item does not belong here"`
