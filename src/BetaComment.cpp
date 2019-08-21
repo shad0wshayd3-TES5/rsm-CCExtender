@@ -82,7 +82,7 @@ const char* BetaComment::HelpStr()
 {
 	static std::string help;
 	if (help.empty()) {
-		help += "<betacomment> <comment>";
+		help += "<betacomment> \" \" <comment>";
 		help += "\n\t<betacomment> ::= \"BetaComment\" | \"BC\"";
 		help += "\n\t<comment> ::= <string> ; The comment string";
 	}
