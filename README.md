@@ -17,7 +17,7 @@ Setting | Description
 <img width=120/> | <img width=120/>
 --- | ---
 <img width=120/> | <img width=120/>
-**Command** | `"> <file-name>"`
+**Command** | `">" <file-name>`
 **Expression** | `<file-name> ::= <string-no-space> \| """ <string-with-space> """`
 <img width=120/> | `<string-no-space> ::= <string> ; Cannot contain spaces`
 <img width=120/> | `<string-with-space> ::= <string> \| <string> " " <string-with-space> ; Can contain spaces`
