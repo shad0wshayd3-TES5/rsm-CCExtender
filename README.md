@@ -28,7 +28,7 @@ Setting | Description
 **Expression** | `<betacomment> ::= "BetaComment" \| "BC"`
 <img width=120/> | `<comment> ::= <string> ; The comment string`
 **Example Usage** | `bc "this item does not belong here"`
-**Description** | Logs a comment to the beta comment file with the given string. Comments are in the following format `username:	(YYYY-MM-DD HH:MM:SS GMT)	SOURCE-File	[CELL-FORM-ID: CELL-EDITOR-ID (CELL-X, CELL-Y)]	[REF-FORM-ID: REF-EDITOR-ID (REF-X, REF-Y, REF-Z)]	"COMMENT"`
+**Description** | Logs a comment to the beta comment file with the given string. Comments are in the following format `USERNAME:	(YYYY-MM-DD HH:MM:SS GMT)	SOURCE-FILE	[CELL-FORM-ID: CELL-EDITOR-ID (CELL-X, CELL-Y)]	[REF-FORM-ID: REF-EDITOR-ID (REF-X, REF-Y, REF-Z)]	"COMMENT"`.
 <img width=120/> | <img width=120/>
 **Command** | `"Clear"`
 **Example Usage** | `clear`
@@ -39,4 +39,4 @@ Setting | Description
 <img width=120/> | `<filter> ::= <integer>`<br>`; 0 - All`<br>`; 1 - Functions`<br>`; 3 - Globals`<br>`; 4 - Forms`
 <img width=120/> | `<form-type> ::= <string> ; The form type to filter form results with`
 **Example Usage** | `help iron 4 armo`
-**Description** | Performs a substring search on all forms by name and editor ID
+**Description** | Performs a substring search on all forms by name and editor ID.
