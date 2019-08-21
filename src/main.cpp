@@ -2,6 +2,7 @@
 
 #include "Commands.h"
 #include "Hooks.h"
+#include "Settings.h"
 #include "version.h"
 
 #include "RE/Skyrim.h"
@@ -61,15 +62,16 @@ extern "C" {
 			return false;
 		}
 
+		if (!Settings::loadSettings()) {
+			return false;
+		}
+
 		if (!SKSE::AllocLocalTrampoline(1024 * 1) || !SKSE::AllocBranchTrampoline(1024 * 1)) {
 			return false;
 		}
 
 		auto messaging = SKSE::GetMessagingInterface();
-		if (messaging->RegisterListener("SKSE", MessageHandler)) {
-			_MESSAGE("Messaging interface registration successful");
-		} else {
-			_FATALERROR("Messaging interface registration failed!\n");
+		if (!messaging->RegisterListener("SKSE", MessageHandler)) {
 			return false;
 		}
 

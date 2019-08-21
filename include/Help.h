@@ -36,9 +36,6 @@ namespace
 	constexpr auto NPOS = static_cast<std::size_t>(-1);
 	void kmp_table(const std::string_view& W, std::vector<std::size_t>& T);
 	bool kmp_search(const std::string_view& S, const std::string_view& W);
-
-	const char* safe_cstr(const char* a_str);
-	char* safe_cstr(char* a_str);
 }
 
 

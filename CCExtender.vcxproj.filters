@@ -22,6 +22,12 @@
     <ClCompile Include="src\CommandPipe.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\BetaComment.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Settings.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\version.h">
@@ -43,6 +49,15 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\CommandPipe.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BetaComment.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Settings.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Utility.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

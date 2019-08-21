@@ -2,10 +2,16 @@
 
 ## Build Dependencies
 * [SKSE64](https://skse.silverlock.org/)
+* [Json2Settings](https://github.com/Ryan-rsm-McKenzie/Json2Settings)
 * [CommonLibSSE](https://github.com/Ryan-rsm-McKenzie/CommonLibSSE)
 
 ## End User Dependencies
 * [SKSE64](https://skse.silverlock.org/)
+
+## Settings
+Setting | Description
+--- | ---
+`betaCommentFileName` | The file path to print beta comment output to.
 
 ## Console commands
 <img width=120/> | <img width=120/>
@@ -17,6 +23,16 @@
 <img width=120/> | `<string-with-space> ::= <string> \| <string> " " <string-with-space> ; Can contain spaces`
 **Example Usage** | `help belethor 4 > "output.txt"`
 **Description** | Pipes output from a console command to the indicated file. File names with spaces must be wrapped in parenthesis. Files are created relative to Skyrim's directory.
+<img width=120/> | <img width=120/>
+**Command** | `"<betacomment> <comment>"`
+**Expression** | `<betacomment> ::= "BetaComment" \| "BC"`
+<img width=120/> | `<comment> ::= <string> ; The comment string`
+**Example Usage** | `bc "this item does not belong here"`
+**Description** | Logs a comment to the beta comment file with the given string. Comments are in the following format `username:	(YYYY-MM-DD HH:MM:SS GMT)	SOURCE-File	[CELL-FORM-ID: CELL-EDITOR-ID (CELL-X, CELL-Y)]	[REF-FORM-ID: REF-EDITOR-ID (REF-X, REF-Y, REF-Z)]	"COMMENT"`
+<img width=120/> | <img width=120/>
+**Command** | `"Clear"`
+**Example Usage** | `clear`
+**Description** | Clears the console output
 **Command** | `"Help" <expr>`
 **Expression** | `<expr> ::= <empty> \| <matchstring> \| <matchstring> <filter> \| <matchstring> <filter> <form-type>`
 <img width=120/> | `<matchstring> ::= <string> ; The string to filter results with`
@@ -24,7 +40,3 @@
 <img width=120/> | `<form-type> ::= <string> ; The form type to filter form results with`
 **Example Usage** | `help iron 4 armo`
 **Description** | Performs a substring search on all forms by name and editor ID
-<img width=120/> | <img width=120/>
-**Command** | `"Clear"`
-**Example Usage** | `clear`
-**Description** | Clears the console output

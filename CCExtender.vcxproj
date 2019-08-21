@@ -53,7 +53,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)..;$(ProjectDir)include;$(SolutionDir)CommonLibSSE\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)..;$(ProjectDir)include;$(SolutionDir)CommonLibSSE\include;$(SolutionDir)Json2Settings\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PLUGIN_EXAMPLE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -98,7 +98,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)..;$(ProjectDir)include;$(SolutionDir)CommonLibSSE\include;$(SolutionDir)Json2Settings\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)..;$(ProjectDir)include;$(SolutionDir)CommonLibSSE\include;$(SolutionDir)Json2Settings\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PLUGIN_EXAMPLE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -152,6 +152,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BetaComment.cpp" />
     <ClCompile Include="src\Clear.cpp" />
     <ClCompile Include="src\CommandPipe.cpp" />
     <ClCompile Include="src\Commands.cpp" />
@@ -159,14 +160,18 @@
     <ClCompile Include="src\Help.cpp" />
     <ClCompile Include="src\Hooks.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Settings.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\BetaComment.h" />
     <ClInclude Include="include\Clear.h" />
     <ClInclude Include="include\CommandPipe.h" />
     <ClInclude Include="include\Commands.h" />
     <ClInclude Include="include\FormStringTable.h" />
     <ClInclude Include="include\Help.h" />
     <ClInclude Include="include\Hooks.h" />
+    <ClInclude Include="include\Settings.h" />
+    <ClInclude Include="include\Utility.h" />
     <ClInclude Include="include\version.h" />
   </ItemGroup>
   <ItemGroup>

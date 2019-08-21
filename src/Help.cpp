@@ -1,6 +1,7 @@
 #include "Help.h"
 
 #include "FormStringTable.h"
+#include "Utility.h"
 
 
 namespace
@@ -75,18 +76,6 @@ namespace
 		}
 
 		return false;
-	}
-
-
-	const char* safe_cstr(const char* a_str)
-	{
-		return a_str ? a_str : "";
-	}
-
-
-	char* safe_cstr(char* a_str)
-	{
-		return a_str ? a_str : "";
 	}
 }
 
