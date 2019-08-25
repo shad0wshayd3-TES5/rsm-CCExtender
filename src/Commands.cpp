@@ -3,6 +3,7 @@
 #include "BetaComment.h"
 #include "Clear.h"
 #include "Help.h"
+#include "SetPerkPoints.h"
 
 
 namespace Commands
@@ -12,6 +13,7 @@ namespace Commands
 		BetaComment::Register();
 		Clear::Register();
 		Help::Register();
+		SetPerkPoints::Register();
 		_MESSAGE("Registered all console commands");
 	}
 }

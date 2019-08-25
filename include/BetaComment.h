@@ -43,6 +43,8 @@ private:
 	static bool PrintUserName(Buffer& a_buf);
 
 
+	static constexpr char LONG_NAME[] = "BetaComment";
+	static constexpr char SHORT_NAME[] = "BC";
 	static constexpr char _DELIM = '\t';
 	static std::ofstream _file;
 	static inline RE::TESObjectREFR* _ref = 0;

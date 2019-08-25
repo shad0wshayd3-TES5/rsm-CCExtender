@@ -137,17 +137,18 @@ void Help::Register()
 			{ "Integer (Optional)", Type::kInteger, 1 },
 			{ "String (Optional)", Type::kString, 1 }
 		};
-		info->longName = "Help";
-		info->shortName = "";
+
+		info->longName = LONG_NAME;
+		info->shortName = SHORT_NAME;
 		info->helpText = HelpStr();
 		info->isRefRequired = false;
 		info->SetParameters(params);
 		info->execute = &Exec;
 		info->eval = 0;
 
-		_MESSAGE("Registered console command: %s (%s)", info->longName, info->shortName);
+		_MESSAGE("Registered console command: %s (%s)", LONG_NAME, SHORT_NAME);
 	} else {
-		_ERROR("Failed to register console command!\n");
+		_ERROR("Failed to register console command: %s (%s)!\n", LONG_NAME, SHORT_NAME);
 	}
 }
 

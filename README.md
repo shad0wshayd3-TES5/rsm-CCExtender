@@ -33,6 +33,7 @@ Setting | Description
 **Command** | `"Clear"`
 **Example Usage** | `clear`
 **Description** | Clears the console output.
+<img width=120/> | <img width=120/>
 **Command** | `"Help" <expr>`
 **Expression** | `<expr> ::= <empty> \| " " <matchstring> \| " " <matchstring> " " <filter> \| " " <matchstring> " " <filter> " " <form-type>`
 <img width=120/> | `<matchstring> ::= <string> ; The string to filter results with`
@@ -40,3 +41,9 @@ Setting | Description
 <img width=120/> | `<form-type> ::= <string> ; The form type to filter form results with`
 **Example Usage** | `help iron 4 armo`
 **Description** | Performs a substring search on all forms by name and editor ID.
+<img width=120/> | <img width=120/>
+**Command** | `<setperkpoints> " " <numperkpoints>`
+**Expression** | `<setperkpoints> ::= "SetPerkPoints" \| "SPP"`
+<img width=120/> | `<numperkpoints> ::= <integer> ; The number of perk points`
+**Example Usage** | `spp 10`
+**Description** | Sets the player's perk points to the specified number.

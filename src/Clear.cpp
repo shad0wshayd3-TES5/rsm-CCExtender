@@ -30,17 +30,27 @@ void Clear::Register()
 {
 	auto info = RE::CommandInfo::LocateConsoleCommand("DumpNiUpdates");	// unused
 	if (info) {
-		info->longName = "Clear";
-		info->shortName = "";
-		info->helpText = "\"Clear\"";
+		info->longName = LONG_NAME;
+		info->shortName = SHORT_NAME;
+		info->helpText = HelpStr();
 		info->isRefRequired = false;
 		info->params = 0;
 		info->numParams = 0;
 		info->execute = &Exec;
 		info->eval = 0;
 
-		_MESSAGE("Registered console command: %s (%s)", info->longName, info->shortName);
+		_MESSAGE("Registered console command: %s (%s)", LONG_NAME, SHORT_NAME);
 	} else {
-		_ERROR("Failed to register console command!\n");
+		_ERROR("Failed to register console command: %s (%s)!\n", LONG_NAME, SHORT_NAME);
 	}
+}
+
+
+const char* Clear::HelpStr()
+{
+	static std::string help;
+	if (help.empty()) {
+		help += "\"Clear\"";
+	}
+	return help.c_str();
 }

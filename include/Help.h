@@ -123,5 +123,7 @@ private:
 	static std::optional<std::set<FormInfo>> GatherFormInfo(const FormType& a_formType);
 
 
+	static constexpr char LONG_NAME[] = "Help";
+	static constexpr char SHORT_NAME[] = "";
 	static std::string _needle;
 };

@@ -17,4 +17,10 @@ private:
 
 	Clear& operator=(const Clear&) = delete;
 	Clear& operator=(Clear&&) = delete;
+
+	static const char* HelpStr();
+
+
+	static constexpr char LONG_NAME[] = "Clear";
+	static constexpr char SHORT_NAME[] = "";
 };

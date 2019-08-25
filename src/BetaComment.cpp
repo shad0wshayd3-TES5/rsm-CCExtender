@@ -17,7 +17,7 @@
 bool BetaComment::Exec(const RE::SCRIPT_PARAMETER* a_paramInfo, RE::CommandInfo::ScriptData* a_scriptData, RE::TESObjectREFR* a_thisObj, RE::TESObjectREFR* a_containingObj, RE::Script* a_scriptObj, RE::ScriptLocals* a_locals, double& a_result, UInt32& a_opcodeOffsetPtr)
 {
 	if (!_file.is_open()) {
-		CPrint("> [BetaComment] ERROR: Failed to open output file");
+		CPrint("> [%s] ERROR: Failed to open output file", LONG_NAME);
 		return true;
 	}
 
@@ -25,7 +25,7 @@ bool BetaComment::Exec(const RE::SCRIPT_PARAMETER* a_paramInfo, RE::CommandInfo:
 	RE::TESObjectREFRPtr selectedRef;
 	RE::TESObjectREFR::LookupByHandle(selectedRefHandle, selectedRef);
 	if (!selectedRef) {
-		CPrint("> [BetaComment] ERROR: No selected reference");
+		CPrint("> [%s] ERROR: No selected reference", LONG_NAME);
 		return true;
 	}
 
@@ -48,10 +48,11 @@ void BetaComment::Register()
 	auto info = RE::CommandInfo::LocateConsoleCommand("BetaComment");  // Unused
 	if (info) {
 		static RE::SCRIPT_PARAMETER params[] = {
-			{ "Comment", Type::kString, 0 }
+			{ "String", Type::kString, 0 }
 		};
-		info->longName = "BetaComment";
-		info->shortName = "BC";
+
+		info->longName = LONG_NAME;
+		info->shortName = SHORT_NAME;
 		info->helpText = HelpStr();
 		info->isRefRequired = false;
 		info->SetParameters(params);
@@ -59,9 +60,9 @@ void BetaComment::Register()
 		info->eval = 0;
 		info->flags = 0;
 
-		_MESSAGE("Registered console command: %s (%s)", info->longName, info->shortName);
+		_MESSAGE("Registered console command: %s (%s)", LONG_NAME, SHORT_NAME);
 	} else {
-		_ERROR("Failed to register console command!\n");
+		_ERROR("Failed to register console command: %s (%s)!\n", LONG_NAME, SHORT_NAME);
 	}
 }
 
@@ -110,14 +111,14 @@ void BetaComment::LogComment(const std::string& a_comment)
 	Buffer tmp;
 
 	if (!PrintUserName(line)) {
-		CPrint("> [BetaComment] ERROR: Failed to get username");
+		CPrint("> [%s] ERROR: Failed to get username", LONG_NAME);
 		return;
 	}
 	line << ':' << _DELIM;
 
 	line << '(';
 	if (!PrintTime(line)) {
-		CPrint("> [BetaComment] ERROR: Failed to get local time");
+		CPrint("> [%s] ERROR: Failed to get local time", LONG_NAME);
 		return;
 	}
 	line << ')' << _DELIM;
@@ -129,7 +130,7 @@ void BetaComment::LogComment(const std::string& a_comment)
 
 	line << '[';
 	if (!PrintCellFormID(line)) {
-		CPrint("> [BetaComment] ERROR: Failed to get cell form ID");
+		CPrint("> [%s] ERROR: Failed to get cell form ID", LONG_NAME);
 		return;
 	}
 
@@ -146,7 +147,7 @@ void BetaComment::LogComment(const std::string& a_comment)
 
 	line << '[';
 	if (!PrintRefFormID(line)) {
-		CPrint("> [BetaComment] ERROR: Failed to get selected ref form ID");
+		CPrint("> [%s] ERROR: Failed to get selected ref form ID", LONG_NAME);
 		return;
 	}
 	line << ": ";
@@ -158,7 +159,7 @@ void BetaComment::LogComment(const std::string& a_comment)
 
 	line << '(';
 	if (!PrintRefCoordinates(line)) {
-		CPrint("> [BetaComment] ERROR: Failed to get selected ref coordinates");
+		CPrint("> [%s] ERROR: Failed to get selected ref coordinates", LONG_NAME);
 		return;
 	}
 	line << ")]" << _DELIM;
