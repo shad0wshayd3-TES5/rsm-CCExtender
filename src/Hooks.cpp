@@ -60,8 +60,8 @@ namespace Hooks
 
 		void TESFormEx::InstallHooks()
 		{
-			WritePatch(0x000F6E80, unrestricted_cast<std::uintptr_t>(&Hook_GetEditorID));	// 1_5_80
-			WritePatch(0x000F72E0, unrestricted_cast<std::uintptr_t>(&Hook_SetEditorID));	// 1_5_80
+			WritePatch(0x000F6E80, unrestricted_cast<std::uintptr_t>(&Hook_GetEditorID));	// 1_5_97
+			WritePatch(0x000F72E0, unrestricted_cast<std::uintptr_t>(&Hook_SetEditorID));	// 1_5_97
 			_DMESSAGE("Installed hooks for (%s)", typeid(TESFormEx).name());
 		}
 

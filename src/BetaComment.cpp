@@ -21,9 +21,7 @@ bool BetaComment::Exec(const RE::SCRIPT_PARAMETER* a_paramInfo, RE::CommandInfo:
 		return true;
 	}
 
-	auto selectedRefHandle = RE::Console::GetSelectedRef();
-	RE::TESObjectREFRPtr selectedRef;
-	RE::TESObjectREFR::LookupByHandle(selectedRefHandle, selectedRef);
+	auto selectedRef = RE::Console::GetSelectedRef();
 	if (!selectedRef) {
 		CPrint("> [%s] ERROR: No selected reference", LONG_NAME);
 		return true;

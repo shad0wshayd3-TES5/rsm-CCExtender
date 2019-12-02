@@ -6,13 +6,6 @@
 
 namespace
 {
-	StopWatch* StopWatch::GetSingleton()
-	{
-		static StopWatch singleton;
-		return &singleton;
-	}
-
-
 	void StopWatch::Start()
 	{
 		_start = std::chrono::high_resolution_clock::now();
@@ -98,8 +91,7 @@ bool Help::Exec(const RE::SCRIPT_PARAMETER* a_paramInfo, RE::CommandInfo::Script
 	}
 
 #if _DEBUG
-	auto stopWatch = StopWatch::GetSingleton();
-	stopWatch->Start();
+	_stopWatch.Start();
 #endif
 
 	if (!filter || *filter == FilterType::kAll || *filter == FilterType::kFunctions) {
@@ -119,7 +111,7 @@ bool Help::Exec(const RE::SCRIPT_PARAMETER* a_paramInfo, RE::CommandInfo::Script
 	}
 
 #if _DEBUG
-	stopWatch->TimeStamp();
+	_stopWatch.TimeStamp();
 #endif
 
 	return true;
@@ -325,7 +317,7 @@ std::string_view Help::GetFullName(RE::TESForm* a_form)
 		{
 			auto fullName = a_form->As<RE::TESFullName*>();
 			if (fullName) {
-				auto cstr = fullName->GetName();
+				auto cstr = fullName->GetFullName();
 				if (cstr) {
 					result = cstr;
 				}
@@ -504,3 +496,6 @@ auto Help::GatherFormInfo(const FormType& a_formType)
 
 
 decltype(Help::_needle) Help::_needle;
+#if _DEBUG
+decltype(Help::_stopWatch) Help::_stopWatch;
+#endif

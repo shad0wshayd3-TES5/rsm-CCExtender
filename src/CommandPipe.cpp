@@ -12,7 +12,7 @@
 void CommandPipe::InstallHooks()
 {
 	// E8 ? ? ? ? 48 89 7C 24 60 48 8B CF
-	constexpr std::uintptr_t FUNC_ADDR = 0x008DAE20;	// 1_5_80
+	constexpr std::uintptr_t FUNC_ADDR = 0x008DAE20;	// 1_5_97
 
 	REL::Offset<std::uintptr_t> hookPoint(FUNC_ADDR + 0xE2);
 	auto offset = reinterpret_cast<std::int32_t*>(hookPoint.GetAddress() + 1);

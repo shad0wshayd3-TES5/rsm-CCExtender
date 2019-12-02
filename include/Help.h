@@ -14,20 +14,10 @@ namespace
 	class StopWatch
 	{
 	public:
-		static StopWatch* GetSingleton();
-
 		void Start();
 		void TimeStamp();
 
 	private:
-		StopWatch() = default;
-		StopWatch(const StopWatch&) = delete;
-		StopWatch(StopWatch&&) = delete;
-		~StopWatch() = default;
-
-		StopWatch& operator=(const StopWatch&) = delete;
-		StopWatch& operator=(StopWatch&&) = delete;
-
 		std::chrono::time_point<std::chrono::high_resolution_clock> _start;
 	};
 
@@ -126,4 +116,7 @@ private:
 	static constexpr char LONG_NAME[] = "Help";
 	static constexpr char SHORT_NAME[] = "";
 	static std::string _needle;
+#if _DEBUG
+	static StopWatch _stopWatch;
+#endif
 };
