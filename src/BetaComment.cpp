@@ -14,7 +14,7 @@
 #include "Utility.h"
 
 
-bool BetaComment::Exec(const RE::SCRIPT_PARAMETER* a_paramInfo, RE::CommandInfo::ScriptData* a_scriptData, RE::TESObjectREFR* a_thisObj, RE::TESObjectREFR* a_containingObj, RE::Script* a_scriptObj, RE::ScriptLocals* a_locals, double& a_result, UInt32& a_opcodeOffsetPtr)
+bool BetaComment::Exec(const RE::SCRIPT_PARAMETER* a_paramInfo, RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, RE::TESObjectREFR* a_thisObj, RE::TESObjectREFR* a_containingObj, RE::Script* a_scriptObj, RE::ScriptLocals* a_locals, double& a_result, UInt32& a_opcodeOffsetPtr)
 {
 	if (!_file.is_open()) {
 		CPrint("> [%s] ERROR: Failed to open output file", LONG_NAME);
@@ -39,24 +39,25 @@ bool BetaComment::Exec(const RE::SCRIPT_PARAMETER* a_paramInfo, RE::CommandInfo:
 
 void BetaComment::Register()
 {
-	using Type = RE::SCRIPT_PARAMETER::Type;
+	using Type = RE::SCRIPT_PARAM_TYPE;
 
 	Init();
 
-	auto info = RE::CommandInfo::LocateConsoleCommand("BetaComment");  // Unused
+	auto info = RE::SCRIPT_FUNCTION::LocateConsoleCommand("BetaComment");  // Unused
 	if (info) {
 		static RE::SCRIPT_PARAMETER params[] = {
-			{ "String", Type::kString, 0 }
+			{ "String", Type::kChar, 0 }
 		};
 
-		info->longName = LONG_NAME;
+		info->functionName = LONG_NAME;
 		info->shortName = SHORT_NAME;
-		info->helpText = HelpStr();
-		info->isRefRequired = false;
+		info->helpString = HelpStr();
+		info->referenceFunction = false;
 		info->SetParameters(params);
-		info->execute = &Exec;
-		info->eval = 0;
-		info->flags = 0;
+		info->executeFunction = &Exec;
+		info->conditionFunction = 0;
+		info->editorFilter = false;
+		info->invalidatesCellList = false;
 
 		_MESSAGE("Registered console command: %s (%s)", LONG_NAME, SHORT_NAME);
 	} else {
@@ -67,7 +68,7 @@ void BetaComment::Register()
 
 void BetaComment::CPrint(const char* a_fmt, ...)
 {
-	auto console = RE::ConsoleManager::GetSingleton();
+	auto console = RE::ConsoleLog::GetSingleton();
 	if (console && console->IsConsoleMode()) {
 		std::va_list args;
 		va_start(args, a_fmt);
@@ -181,7 +182,7 @@ bool BetaComment::PrintCellCoordinates(Buffer& a_buf)
 		return false;
 	}
 
-	a_buf << coordinates->x << ", " << coordinates->y;
+	a_buf << coordinates->cellX << ", " << coordinates->cellY;
 
 	return true;
 }
@@ -194,7 +195,7 @@ bool BetaComment::PrintCellEditorID(Buffer& a_buf)
 		return false;
 	}
 
-	std::string editorID = safe_cstr(cell->GetEditorID());
+	std::string editorID = safe_cstr(cell->GetFormEditorID());
 	if (editorID.empty()) {
 		return false;
 	}
@@ -217,14 +218,14 @@ bool BetaComment::PrintCellFormID(Buffer& a_buf)
 
 bool BetaComment::PrintRefCoordinates(Buffer& a_buf)
 {
-	a_buf << std::floor(_ref->pos.x) << ", " << std::floor(_ref->pos.y) << ", " << std::floor(_ref->pos.z);
+	a_buf << std::floor(_ref->GetPositionX()) << ", " << std::floor(_ref->GetPositionY()) << ", " << std::floor(_ref->GetPositionZ());
 	return true;
 }
 
 
 bool BetaComment::PrintRefEditorID(Buffer& a_buf)
 {
-	std::string editorID = safe_cstr(_ref->GetEditorID());
+	std::string editorID = safe_cstr(_ref->GetFormEditorID());
 	if (editorID.empty()) {
 		return false;
 	}
@@ -246,12 +247,12 @@ bool BetaComment::PrintRefFormID(Buffer& a_buf)
 
 bool BetaComment::PrintSourceFile(Buffer& a_buf)
 {
-	auto source = _ref->GetFinalSourceFile();
+	auto source = _ref->GetDescriptionOwnerFile();
 	if (!source) {
 		return false;
 	}
 
-	a_buf << source->name;
+	a_buf << source->fileName;
 
 	return true;
 }

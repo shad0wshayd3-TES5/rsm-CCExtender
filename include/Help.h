@@ -32,7 +32,7 @@ namespace
 class Help
 {
 public:
-	static bool Exec(const RE::SCRIPT_PARAMETER* a_paramInfo, RE::CommandInfo::ScriptData* a_scriptData, RE::TESObjectREFR* a_thisObj, RE::TESObjectREFR* a_containingObj, RE::Script* a_scriptObj, RE::ScriptLocals* a_locals, double& a_result, UInt32& a_opcodeOffsetPtr);
+	static bool Exec(const RE::SCRIPT_PARAMETER* a_paramInfo, RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, RE::TESObjectREFR* a_thisObj, RE::TESObjectREFR* a_containingObj, RE::Script* a_scriptObj, RE::ScriptLocals* a_locals, double& a_result, UInt32& a_opcodeOffsetPtr);
 	static void Register();
 
 private:
@@ -102,11 +102,11 @@ private:
 
 	static const char* HelpStr();
 	static void CPrint(const char* a_fmt, ...);
-	static void ParseParams(RE::CommandInfo::ScriptData* a_scriptData, MatchString& a_matchString, Filter& a_filter, FormType& a_formType);
+	static void ParseParams(RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, MatchString& a_matchString, Filter& a_filter, FormType& a_formType);
 	static bool Match(const std::string_view& a_haystack);
 	static std::string_view GetFullName(RE::TESForm* a_form);
 	static void EnumerateFunctions();
-	static void EnumerateFunctions(RE::CommandInfo* a_beg, RE::CommandInfo* a_end);
+	static void EnumerateFunctions(RE::SCRIPT_FUNCTION* a_beg, RE::SCRIPT_FUNCTION* a_end);
 	static void EnumerateSettings();
 	static void EnumerateGlobals();
 	static void EnumerateForms(const FormType& a_formType);

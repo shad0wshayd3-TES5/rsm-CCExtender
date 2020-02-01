@@ -1,13 +1,17 @@
 #pragma once
 
-#include "Json2Settings.h"  // Json2Settings
+#include "Json2Settings.h"
 
 
-class Settings : public Json2Settings::Settings
+class Settings
 {
 public:
+	using sSetting = Json2Settings::sSetting;
+
+
 	Settings() = delete;
-	static bool loadSettings(bool a_dumpParse = false);
+
+	static bool LoadSettings(bool a_dumpParse = false);
 
 
 	static sSetting betaCommentFileName;

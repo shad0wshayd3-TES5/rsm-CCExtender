@@ -1,8 +1,10 @@
 #include "Hooks.h"
 
-#include "skse64_common/BranchTrampoline.h"
 #include "skse64_common/SafeWrite.h"
 #include "xbyak/xbyak.h"
+
+#include "SKSE/API.h"
+#include "SKSE/Trampoline.h"
 
 #include "CommandPipe.h"
 
@@ -19,7 +21,7 @@ namespace Hooks
 
 			struct Patch : Xbyak::CodeGenerator
 			{
-				Patch(void* a_buf, std::size_t a_callAddr) : Xbyak::CodeGenerator(1024, a_buf)
+				Patch(std::uintptr_t a_maxSize, void* a_buf, std::size_t a_callAddr) : Xbyak::CodeGenerator(a_maxSize, a_buf)
 				{
 					Xbyak::Label callLbl;
 
@@ -30,9 +32,10 @@ namespace Hooks
 				}
 			};
 
-			void* patchBuf = g_localTrampoline.StartAlloc();
-			Patch patch(patchBuf, a_funcAddr);
-			g_localTrampoline.EndAlloc(patch.getCurr());
+			auto trampoline = SKSE::GetTrampoline();
+			auto patchBuf = trampoline->StartAlloc();
+			Patch patch(trampoline->FreeSize(), patchBuf, a_funcAddr);
+			trampoline->EndAlloc(patch.getSize());
 
 			assert(patch.getSize() <= CAVE_SIZE);
 
@@ -44,6 +47,7 @@ namespace Hooks
 
 		const char* TESFormEx::Hook_GetEditorID()
 		{
+			Locker locker(_lock);
 			auto it = _idMap.find(formID);
 			return it != _idMap.end() ? it->second->c_str() : "";
 		}
@@ -52,6 +56,7 @@ namespace Hooks
 		bool TESFormEx::Hook_SetEditorID(const char* a_str)
 		{
 			if (a_str) {
+				Locker locker(_lock);
 				_idMap[formID].reset(new std::string(a_str));
 			}
 			return true;

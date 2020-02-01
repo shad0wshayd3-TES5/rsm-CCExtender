@@ -3,18 +3,17 @@
 #include "SKSE/API.h"
 
 
-bool Clear::Exec(const RE::SCRIPT_PARAMETER* a_paramInfo, RE::CommandInfo::ScriptData* a_scriptData, RE::TESObjectREFR* a_thisObj, RE::TESObjectREFR* a_containingObj, RE::Script* a_scriptObj, RE::ScriptLocals* a_locals, double& a_result, UInt32& a_opcodeOffsetPtr)
+bool Clear::Exec(const RE::SCRIPT_PARAMETER* a_paramInfo, RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, RE::TESObjectREFR* a_thisObj, RE::TESObjectREFR* a_containingObj, RE::Script* a_scriptObj, RE::ScriptLocals* a_locals, double& a_result, UInt32& a_opcodeOffsetPtr)
 {
 	auto task = SKSE::GetTaskInterface();
 	task->AddUITask([]()
 	{
-		auto mm = RE::MenuManager::GetSingleton();
-		auto uiStr = RE::UIStringHolder::GetSingleton();
-		if (!mm || !uiStr) {
+		auto ui = RE::UI::GetSingleton();
+		if (!ui) {
 			return;
 		}
 
-		auto console = mm->GetMenu<RE::Console>(uiStr->console);
+		auto console = ui->GetMenu<RE::Console>();
 		if (!console | !console->view) {
 			return;
 		}
@@ -28,16 +27,16 @@ bool Clear::Exec(const RE::SCRIPT_PARAMETER* a_paramInfo, RE::CommandInfo::Scrip
 
 void Clear::Register()
 {
-	auto info = RE::CommandInfo::LocateConsoleCommand("DumpNiUpdates");	// unused
+	auto info = RE::SCRIPT_FUNCTION::LocateConsoleCommand("DumpNiUpdates");	// unused
 	if (info) {
-		info->longName = LONG_NAME;
+		info->functionName = LONG_NAME;
 		info->shortName = SHORT_NAME;
-		info->helpText = HelpStr();
-		info->isRefRequired = false;
+		info->helpString = HelpStr();
+		info->referenceFunction = false;
 		info->params = 0;
 		info->numParams = 0;
-		info->execute = &Exec;
-		info->eval = 0;
+		info->executeFunction = &Exec;
+		info->conditionFunction = 0;
 
 		_MESSAGE("Registered console command: %s (%s)", LONG_NAME, SHORT_NAME);
 	} else {

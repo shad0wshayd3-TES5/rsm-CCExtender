@@ -1,14 +1,14 @@
 #include "SetPerkPoints.h"
 
 
-bool SetPerkPoints::Exec(const RE::SCRIPT_PARAMETER* a_paramInfo, RE::CommandInfo::ScriptData* a_scriptData, RE::TESObjectREFR* a_thisObj, RE::TESObjectREFR* a_containingObj, RE::Script* a_scriptObj, RE::ScriptLocals* a_locals, double& a_result, UInt32& a_opcodeOffsetPtr)
+bool SetPerkPoints::Exec(const RE::SCRIPT_PARAMETER* a_paramInfo, RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, RE::TESObjectREFR* a_thisObj, RE::TESObjectREFR* a_containingObj, RE::Script* a_scriptObj, RE::ScriptLocals* a_locals, double& a_result, UInt32& a_opcodeOffsetPtr)
 {
 	auto num = a_scriptData->GetIntegerChunk()->GetInteger();
 	if (num < 0) {
 		CPrint("> [%s] ERROR: Cannot set perk points to a negative number (%i)", LONG_NAME, num);
 		return true;
-	} else if (num > std::numeric_limits<UInt8>::max()) {
-		CPrint("> [%s] ERROR: Cannot set perk points greater than 255 (%i)", LONG_NAME, num);
+	} else if (num > std::numeric_limits<SInt8>::max()) {
+		CPrint("> [%s] ERROR: Cannot set perk points greater than %i (%i)", LONG_NAME, std::numeric_limits<SInt8>::max(), num);
 		return true;
 	}
 
@@ -18,7 +18,7 @@ bool SetPerkPoints::Exec(const RE::SCRIPT_PARAMETER* a_paramInfo, RE::CommandInf
 		return true;
 	}
 
-	player->numPerkPoints = static_cast<UInt8>(num);
+	player->perkCount = static_cast<SInt8>(num);
 	CPrint("> [%s] Player now has %i perk points", LONG_NAME, num);
 
 	return true;
@@ -27,23 +27,23 @@ bool SetPerkPoints::Exec(const RE::SCRIPT_PARAMETER* a_paramInfo, RE::CommandInf
 
 void SetPerkPoints::Register()
 {
-	using Type = RE::SCRIPT_PARAMETER::Type;
+	using Type = RE::SCRIPT_PARAM_TYPE;
 
-	auto info = RE::CommandInfo::LocateConsoleCommand("Timing");	// unused
+	auto info = RE::SCRIPT_FUNCTION::LocateConsoleCommand("Timing");	// unused
 	if (info) {
 		static RE::SCRIPT_PARAMETER params[] = {
-			{ "Integer", Type::kInteger, 1 }
+			{ "Integer", Type::kInt, 1 }
 		};
 
-		info->longName = LONG_NAME;
+		info->functionName = LONG_NAME;
 		info->shortName = SHORT_NAME;
-		info->helpText = HelpStr();
-		info->isRefRequired = false;
+		info->helpString = HelpStr();
+		info->referenceFunction = false;
 		info->SetParameters(params);
-		info->execute = &Exec;
-		info->eval = 0;
+		info->executeFunction = &Exec;
+		info->conditionFunction = 0;
 
-		_MESSAGE("Registered console command: %s (%s)", info->longName, info->shortName);
+		_MESSAGE("Registered console command: %s (%s)", LONG_NAME, SHORT_NAME);
 	} else {
 		_ERROR("Failed to register console command!\n");
 	}
@@ -64,7 +64,7 @@ const char* SetPerkPoints::HelpStr()
 
 void SetPerkPoints::CPrint(const char* a_fmt, ...)
 {
-	auto console = RE::ConsoleManager::GetSingleton();
+	auto console = RE::ConsoleLog::GetSingleton();
 	if (console && console->IsConsoleMode()) {
 		std::va_list args;
 		va_start(args, a_fmt);

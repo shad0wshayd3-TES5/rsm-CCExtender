@@ -11,10 +11,11 @@ class CommandPipe
 {
 public:
 	static void InstallHooks();
-	static void Hook_Invoke(RE::Script* a_script, void* a_arg2, RE::Script::InvokeType a_type, RE::TESObjectREFR* a_targetRef);
+	static void Hook_CompileAndRun(RE::Script* a_script, RE::ScriptCompiler* a_compiler, RE::COMPILER_NAME a_name, RE::TESObjectREFR* a_targetRef);
 
 private:
-	using Invoke_t = function_type_t<decltype(&CommandPipe::Hook_Invoke)>;
+	static inline auto CompileAndRun_f = &CommandPipe::Hook_CompileAndRun;
+	using CompileAndRun_t = function_type_t<decltype(CompileAndRun_f)>;
 
 
 	CommandPipe() = delete;
@@ -30,5 +31,5 @@ private:
 
 
 	static std::ofstream _outFile;
-	static inline Invoke_t* _Invoke = 0;
+	static inline CompileAndRun_t* _CompileAndRun = 0;
 };

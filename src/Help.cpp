@@ -73,7 +73,7 @@ namespace
 }
 
 
-bool Help::Exec(const RE::SCRIPT_PARAMETER* a_paramInfo, RE::CommandInfo::ScriptData* a_scriptData, RE::TESObjectREFR* a_thisObj, RE::TESObjectREFR* a_containingObj, RE::Script* a_scriptObj, RE::ScriptLocals* a_locals, double& a_result, UInt32& a_opcodeOffsetPtr)
+bool Help::Exec(const RE::SCRIPT_PARAMETER* a_paramInfo, RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, RE::TESObjectREFR* a_thisObj, RE::TESObjectREFR* a_containingObj, RE::Script* a_scriptObj, RE::ScriptLocals* a_locals, double& a_result, UInt32& a_opcodeOffsetPtr)
 {
 	MatchString matchString;
 	Filter filter;
@@ -120,23 +120,23 @@ bool Help::Exec(const RE::SCRIPT_PARAMETER* a_paramInfo, RE::CommandInfo::Script
 
 void Help::Register()
 {
-	using Type = RE::SCRIPT_PARAMETER::Type;
+	using Type = RE::SCRIPT_PARAM_TYPE;
 
-	auto info = RE::CommandInfo::LocateConsoleCommand("Help");
+	auto info = RE::SCRIPT_FUNCTION::LocateConsoleCommand("Help");
 	if (info) {
 		static RE::SCRIPT_PARAMETER params[] = {
-			{ "String (Optional)", Type::kString, 1 },
-			{ "Integer (Optional)", Type::kInteger, 1 },
-			{ "String (Optional)", Type::kString, 1 }
+			{ "String (Optional)", Type::kChar, 1 },
+			{ "Integer (Optional)", Type::kInt, 1 },
+			{ "String (Optional)", Type::kChar, 1 }
 		};
 
-		info->longName = LONG_NAME;
+		info->functionName = LONG_NAME;
 		info->shortName = SHORT_NAME;
-		info->helpText = HelpStr();
-		info->isRefRequired = false;
+		info->helpString = HelpStr();
+		info->referenceFunction = false;
 		info->SetParameters(params);
-		info->execute = &Exec;
-		info->eval = 0;
+		info->executeFunction = &Exec;
+		info->conditionFunction = 0;
 
 		_MESSAGE("Registered console command: %s (%s)", LONG_NAME, SHORT_NAME);
 	} else {
@@ -151,7 +151,7 @@ Help::FormInfo::FormInfo(RE::TESForm* a_form) :
 	_formID(a_form->formID),
 	_formType(a_form->formType)
 {
-	_editorID = safe_cstr(a_form->GetEditorID());
+	_editorID = safe_cstr(a_form->GetFormEditorID());
 	if (!_editorID.empty()) {
 		_editorID.push_back(' ');
 	}
@@ -255,7 +255,7 @@ const char* Help::HelpStr()
 
 void Help::CPrint(const char* a_fmt, ...)
 {
-	auto console = RE::ConsoleManager::GetSingleton();
+	auto console = RE::ConsoleLog::GetSingleton();
 	if (console && console->IsConsoleMode()) {
 		std::va_list args;
 		va_start(args, a_fmt);
@@ -265,10 +265,10 @@ void Help::CPrint(const char* a_fmt, ...)
 }
 
 
-void Help::ParseParams(RE::CommandInfo::ScriptData* a_scriptData, MatchString& a_matchString, Filter& a_filter, FormType& a_formType)
+void Help::ParseParams(RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, MatchString& a_matchString, Filter& a_filter, FormType& a_formType)
 {
-	RE::CommandInfo::StringChunk* strChunk = 0;
-	RE::CommandInfo::IntegerChunk* intChunk = 0;
+	RE::SCRIPT_FUNCTION::StringChunk* strChunk = 0;
+	RE::SCRIPT_FUNCTION::IntegerChunk* intChunk = 0;
 
 	if (a_scriptData->numParams < 1) {
 		return;
@@ -315,7 +315,7 @@ std::string_view Help::GetFullName(RE::TESForm* a_form)
 		break;
 	default:
 		{
-			auto fullName = a_form->As<RE::TESFullName*>();
+			auto fullName = a_form->As<RE::TESFullName>();
 			if (fullName) {
 				auto cstr = fullName->GetFullName();
 				if (cstr) {
@@ -333,22 +333,22 @@ std::string_view Help::GetFullName(RE::TESForm* a_form)
 void Help::EnumerateFunctions()
 {
 	CPrint("----CONSOLE COMMANDS--------------------");
-	auto iter = RE::CommandInfo::GetFirstConsoleCommand();
-	EnumerateFunctions(iter, iter + RE::CommandInfo::Commands::kConsoleCommandsEnd);
+	auto iter = RE::SCRIPT_FUNCTION::GetFirstConsoleCommand();
+	EnumerateFunctions(iter, iter + RE::SCRIPT_FUNCTION::Commands::kConsoleCommandsEnd);
 
 	CPrint("----SCRIPT FUNCTIONS--------------------");
-	iter = RE::CommandInfo::GetFirstScriptCommand();
-	EnumerateFunctions(iter, iter + RE::CommandInfo::Commands::kScriptCommandsEnd);
+	iter = RE::SCRIPT_FUNCTION::GetFirstScriptCommand();
+	EnumerateFunctions(iter, iter + RE::SCRIPT_FUNCTION::Commands::kScriptCommandsEnd);
 }
 
 
-void Help::EnumerateFunctions(RE::CommandInfo* a_beg, RE::CommandInfo* a_end)
+void Help::EnumerateFunctions(RE::SCRIPT_FUNCTION* a_beg, RE::SCRIPT_FUNCTION* a_end)
 {
 	std::string_view commandName;
 	std::string_view longNameV;
 	std::string_view shortNameV;
 	for (auto it = a_beg; it != a_end; ++it) {
-		longNameV = safe_cstr(it->longName);
+		longNameV = safe_cstr(it->functionName);
 		shortNameV = safe_cstr(it->shortName);
 		for (std::size_t j = 0; j < 2; ++j) {
 			switch (j) {
@@ -369,7 +369,7 @@ void Help::EnumerateFunctions(RE::CommandInfo* a_beg, RE::CommandInfo* a_end)
 					shortName = " (" + shortName + ")";
 				}
 
-				std::string helpText(safe_cstr(it->helpText));
+				std::string helpText(safe_cstr(it->helpString));
 				if (!helpText.empty()) {
 					helpText = " -> " + helpText;
 				}
@@ -422,7 +422,7 @@ void Help::EnumerateGlobals()
 	auto& globals = dataHandler->GetFormArray<RE::TESGlobal>();
 	std::string editorID;
 	for (auto& global : globals) {
-		editorID = safe_cstr(global->GetEditorID());
+		editorID = safe_cstr(global->GetFormEditorID());
 		if (Match(editorID)) {
 			CPrint("%s = %0.2f", editorID.c_str(), global->value);
 		}
@@ -447,11 +447,11 @@ auto Help::GatherFormInfo(const FormType& a_formType)
 	-> std::optional<std::set<FormInfo>>
 {
 	auto lookupInfo = RE::GlobalLookupInfo::GetSingleton();
-	RE::BSReadLockGuard locker(lookupInfo->formIDsLock);
-	if (!lookupInfo->formIDs) {
+	RE::BSReadLockGuard locker(lookupInfo->allFormsMapLock);
+	if (!lookupInfo->allForms) {
 		return std::nullopt;
 	}
-	auto& formMap = *lookupInfo->formIDs;
+	auto& formMap = *lookupInfo->allForms;
 
 	auto strTable = FormStringTable::GetSingleton();
 	auto formFilter = a_formType ? strTable->MapStringToFormType(*a_formType) : RE::FormType::None;
@@ -468,7 +468,7 @@ auto Help::GatherFormInfo(const FormType& a_formType)
 			continue;
 		}
 
-		editorID = safe_cstr(form->GetEditorID());
+		editorID = safe_cstr(form->GetFormEditorID());
 		fullName = GetFullName(form);
 
 		for (std::size_t j = 0; j < 2; ++j) {

@@ -1,12 +1,11 @@
 #include "CommandPipe.h"
 
-#include "skse64_common/BranchTrampoline.h"
-#include "skse64_common/SafeWrite.h"
-
 #include <ios>
+#include <typeinfo>
 
 #include "REL/Relocation.h"
 #include "SKSE/API.h"
+#include "SKSE/Trampoline.h"
 
 
 void CommandPipe::InstallHooks()
@@ -14,17 +13,15 @@ void CommandPipe::InstallHooks()
 	// E8 ? ? ? ? 48 89 7C 24 60 48 8B CF
 	constexpr std::uintptr_t FUNC_ADDR = 0x008DAE20;	// 1_5_97
 
-	REL::Offset<std::uintptr_t> hookPoint(FUNC_ADDR + 0xE2);
-	auto offset = reinterpret_cast<std::int32_t*>(hookPoint.GetAddress() + 1);
-	auto nextOp = hookPoint.GetAddress() + 5;
-	_Invoke = reinterpret_cast<Invoke_t*>(nextOp + *offset);
-	g_branchTrampoline.Write5Call(hookPoint.GetAddress(), unrestricted_cast<std::uintptr_t>(&CommandPipe::Hook_Invoke));
+	REL::Offset<std::uintptr_t> funcBase(FUNC_ADDR);
+	auto trampoline = SKSE::GetTrampoline();
+	_CompileAndRun = trampoline->Write5CallEx<CompileAndRun_t*>(funcBase.GetAddress() + 0xE2, CompileAndRun_f);
 
 	_MESSAGE("Installed hooks for class (%s)", typeid(CommandPipe).name());
 }
 
 
-void CommandPipe::Hook_Invoke(RE::Script* a_script, void* a_arg2, RE::Script::InvokeType a_type, RE::TESObjectREFR* a_targetRef)
+void CommandPipe::Hook_CompileAndRun(RE::Script* a_script, RE::ScriptCompiler* a_compiler, RE::COMPILER_NAME a_name, RE::TESObjectREFR* a_targetRef)
 {
 	auto cmd = a_script->GetCommand();
 	std::optional<std::string> fileName;
@@ -37,10 +34,10 @@ void CommandPipe::Hook_Invoke(RE::Script* a_script, void* a_arg2, RE::Script::In
 		_outFile.open(*fileName);
 	}
 	
-	_Invoke(a_script, a_arg2, a_type, a_targetRef);
+	_CompileAndRun(a_script, a_compiler, a_name, a_targetRef);
 
 	if (_outFile.is_open()) {
-		auto console = RE::ConsoleManager::GetSingleton();
+		auto console = RE::ConsoleLog::GetSingleton();
 		_outFile << console->buffer.c_str();
 		_outFile.close();
 	}
@@ -53,7 +50,7 @@ void CommandPipe::CPrint(const char* a_string)
 	auto task = SKSE::GetTaskInterface();
 	task->AddTask([str]()
 	{
-		auto console = RE::ConsoleManager::GetSingleton();
+		auto console = RE::ConsoleLog::GetSingleton();
 		if (console) {
 			console->Print(str.c_str());
 		}

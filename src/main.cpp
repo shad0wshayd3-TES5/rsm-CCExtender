@@ -29,6 +29,7 @@ extern "C" {
 		SKSE::Logger::SetPrintLevel(SKSE::Logger::Level::kDebugMessage);
 		SKSE::Logger::SetFlushLevel(SKSE::Logger::Level::kDebugMessage);
 		SKSE::Logger::UseLogStamp(true);
+		SKSE::Logger::TrackTrampolineStats(true);
 
 		_MESSAGE("CCExtender v%s", CEXT_VERSION_VERSTRING);
 
@@ -45,7 +46,7 @@ extern "C" {
 		case RUNTIME_VERSION_1_5_97:
 			break;
 		default:
-			_FATALERROR("Unsupported runtime version %08X!\n", a_skse->RuntimeVersion());
+			_FATALERROR("Unsupported runtime version %s!\n", a_skse->UnmangledRuntimeVersion().c_str());
 			return false;
 		}
 
@@ -61,11 +62,11 @@ extern "C" {
 			return false;
 		}
 
-		if (!Settings::loadSettings()) {
+		if (!Settings::LoadSettings()) {
 			return false;
 		}
 
-		if (!SKSE::AllocLocalTrampoline(1024 * 1) || !SKSE::AllocBranchTrampoline(1024 * 1)) {
+		if (!SKSE::AllocTrampoline(1 << 10)) {
 			return false;
 		}
 

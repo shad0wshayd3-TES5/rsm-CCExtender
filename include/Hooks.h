@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <mutex>
 #include <string>
 #include <unordered_map>
 
@@ -14,14 +15,21 @@ namespace Hooks
 		class TESFormEx : public RE::TESForm
 		{
 		public:
-			static void WritePatch(std::uintptr_t a_hookAddr, std::uintptr_t a_funcAddr);
 			static void InstallHooks();
+
+		private:
+			using Lock = std::mutex;
+			using Locker = std::lock_guard<Lock>;
+			using EditorID = std::unique_ptr<std::string>;
+
+
+			static void WritePatch(std::uintptr_t a_hookAddr, std::uintptr_t a_funcAddr);
 
 			const char* Hook_GetEditorID();
 			bool Hook_SetEditorID(const char* a_str);
 
 
-			using EditorID = std::unique_ptr<std::string>;
+			static Lock _lock;
 			static std::unordered_map<RE::FormID, EditorID> _idMap;
 		};
 	}
