@@ -94,7 +94,7 @@ void BetaComment::Init()
 {
 	constexpr auto USERNAME_SIZE = std::extent<decltype(_userName)>::value;
 
-	_file.open(Settings::betaCommentFileName.c_str());
+	_file.open(*Settings::betaCommentFileName);
 
 	DWORD tmpSize = USERNAME_SIZE;
 	if (!GetUserName(_userName, &tmpSize)) {

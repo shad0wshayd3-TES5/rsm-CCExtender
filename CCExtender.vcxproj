@@ -156,6 +156,7 @@
     <ClCompile Include="src\Clear.cpp" />
     <ClCompile Include="src\CommandPipe.cpp" />
     <ClCompile Include="src\Commands.cpp" />
+    <ClCompile Include="src\EditorIDCache.cpp" />
     <ClCompile Include="src\FormStringTable.cpp" />
     <ClCompile Include="src\Help.cpp" />
     <ClCompile Include="src\Hooks.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="include\Clear.h" />
     <ClInclude Include="include\CommandPipe.h" />
     <ClInclude Include="include\Commands.h" />
+    <ClInclude Include="include\EditorIDCache.h" />
     <ClInclude Include="include\FormStringTable.h" />
     <ClInclude Include="include\Help.h" />
     <ClInclude Include="include\Hooks.h" />

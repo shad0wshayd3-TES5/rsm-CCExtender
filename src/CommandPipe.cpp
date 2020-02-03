@@ -15,7 +15,7 @@ void CommandPipe::InstallHooks()
 
 	REL::Offset<std::uintptr_t> funcBase(FUNC_ADDR);
 	auto trampoline = SKSE::GetTrampoline();
-	_CompileAndRun = trampoline->Write5CallEx<CompileAndRun_t*>(funcBase.GetAddress() + 0xE2, CompileAndRun_f);
+	_CompileAndRun = trampoline->Write5CallEx(funcBase.GetAddress() + 0xE2, &CommandPipe::Hook_CompileAndRun);
 
 	_MESSAGE("Installed hooks for class (%s)", typeid(CommandPipe).name());
 }

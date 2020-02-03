@@ -31,6 +31,9 @@
     <ClCompile Include="src\SetPerkPoints.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\EditorIDCache.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\version.h">
@@ -60,10 +63,13 @@
     <ClInclude Include="include\Settings.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\Utility.h">
+    <ClInclude Include="include\SetPerkPoints.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\SetPerkPoints.h">
+    <ClInclude Include="include\EditorIDCache.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Utility.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,5 +1,6 @@
 #include "Help.h"
 
+#include "EditorIDCache.h"
 #include "FormStringTable.h"
 #include "Utility.h"
 
@@ -151,7 +152,8 @@ Help::FormInfo::FormInfo(RE::TESForm* a_form) :
 	_formID(a_form->formID),
 	_formType(a_form->formType)
 {
-	_editorID = safe_cstr(a_form->GetFormEditorID());
+	auto cache = EditorIDCache::GetSingleton();
+	_editorID = cache->GetEditorID(a_form);
 	if (!_editorID.empty()) {
 		_editorID.push_back(' ');
 	}
@@ -189,7 +191,7 @@ void Help::FormInfo::Print() const
 
 Help::Setting::Setting(const RE::Setting* a_setting) :
 	_setting(a_setting),
-	_name(safe_cstr(a_setting->GetName()))
+	_name(a_setting->GetName())
 {
 	assert(_setting);
 }
@@ -468,7 +470,8 @@ auto Help::GatherFormInfo(const FormType& a_formType)
 			continue;
 		}
 
-		editorID = safe_cstr(form->GetFormEditorID());
+		auto cache = EditorIDCache::GetSingleton();
+		editorID = cache->GetEditorID(form);
 		fullName = GetFullName(form);
 
 		for (std::size_t j = 0; j < 2; ++j) {
