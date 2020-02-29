@@ -1,6 +1,4 @@
-﻿#include "skse64_common/skse_version.h"
-
-#include "Commands.h"
+﻿#include "Commands.h"
 #include "Hooks.h"
 #include "Settings.h"
 #include "version.h"
@@ -42,11 +40,9 @@ extern "C" {
 			return false;
 		}
 
-		switch (a_skse->RuntimeVersion()) {
-		case RUNTIME_VERSION_1_5_97:
-			break;
-		default:
-			_FATALERROR("Unsupported runtime version %s!\n", a_skse->UnmangledRuntimeVersion().c_str());
+		auto ver = a_skse->RuntimeVersion();
+		if (ver <= SKSE::RUNTIME_1_5_39) {
+			_FATALERROR("Unsupported runtime version %s!", ver.GetString().c_str());
 			return false;
 		}
 
@@ -66,7 +62,7 @@ extern "C" {
 			return false;
 		}
 
-		if (!SKSE::AllocTrampoline(1 << 5)) {
+		if (!SKSE::AllocTrampoline(1 << 4)) {
 			return false;
 		}
 

@@ -3,11 +3,9 @@
 #include <cassert>
 #include <typeinfo>
 
-#include "skse64_common/SafeWrite.h"
-#include "xbyak/xbyak.h"
-
 #include "SKSE/API.h"
-#include "SKSE/Trampoline.h"
+#include "SKSE/CodeGenerator.h"
+#include "SKSE/SafeWrite.h"
 
 
 EditorIDCache* EditorIDCache::GetSingleton()
@@ -19,7 +17,7 @@ EditorIDCache* EditorIDCache::GetSingleton()
 
 void EditorIDCache::InstallHooks()
 {
-	WritePatch(0x000F72E0, unrestricted_cast<std::uintptr_t>(&Hook_SetFormEditorID));	// 1_5_97
+	WritePatch(REL::ID(10883), unrestricted_cast<std::uintptr_t>(&Hook_SetFormEditorID));	// 1_5_97
 	_MESSAGE("Installed hooks for (%s)", typeid(EditorIDCache).name());
 }
 
@@ -39,15 +37,15 @@ std::string EditorIDCache::GetEditorID(RE::TESForm* a_form) const
 }
 
 
-void EditorIDCache::WritePatch(std::uintptr_t a_hookAddr, std::uintptr_t a_funcAddr)
+void EditorIDCache::WritePatch(REL::ID a_hookID, std::uintptr_t a_funcAddr)
 {
 	constexpr std::size_t CAVE_SIZE = 0x20;
 
-	REL::Offset<std::uintptr_t> funcBase(a_hookAddr);
+	REL::Offset<std::uintptr_t> funcBase = a_hookID;
 
-	struct Patch : Xbyak::CodeGenerator
+	struct Patch : SKSE::CodeGenerator
 	{
-		Patch(std::size_t a_maxSize, void* a_buf, std::size_t a_callAddr) : Xbyak::CodeGenerator(a_maxSize, a_buf)
+		Patch(std::size_t a_callAddr) : SKSE::CodeGenerator(CAVE_SIZE)
 		{
 			Xbyak::Label callLbl;
 
@@ -58,15 +56,11 @@ void EditorIDCache::WritePatch(std::uintptr_t a_hookAddr, std::uintptr_t a_funcA
 		}
 	};
 
-	auto trampoline = SKSE::GetTrampoline();
-	auto patchBuf = trampoline->StartAlloc();
-	Patch patch(trampoline->FreeSize(), patchBuf, a_funcAddr);
-	trampoline->EndAlloc(patch.getSize());
-
-	assert(patch.getSize() <= CAVE_SIZE);
+	Patch patch(a_funcAddr);
+	patch.finalize();
 
 	for (std::size_t i = 0; i < patch.getSize(); ++i) {
-		SafeWrite8(funcBase.GetAddress() + i, patch.getCode()[i]);
+		SKSE::SafeWrite8(funcBase.GetAddress() + i, patch.getCode()[i]);
 	}
 }
 

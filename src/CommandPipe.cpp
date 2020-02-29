@@ -10,12 +10,9 @@
 
 void CommandPipe::InstallHooks()
 {
-	// E8 ? ? ? ? 48 89 7C 24 60 48 8B CF
-	constexpr std::uintptr_t FUNC_ADDR = 0x008DAE20;	// 1_5_97
-
-	REL::Offset<std::uintptr_t> funcBase(FUNC_ADDR);
+	REL::Offset<std::uintptr_t> hookPoint(REL::ID(52065), 0xE2);
 	auto trampoline = SKSE::GetTrampoline();
-	_CompileAndRun = trampoline->Write5CallEx(funcBase.GetAddress() + 0xE2, &CommandPipe::Hook_CompileAndRun);
+	_CompileAndRun = trampoline->Write5CallEx(hookPoint.GetAddress(), &CommandPipe::Hook_CompileAndRun);
 
 	_MESSAGE("Installed hooks for class (%s)", typeid(CommandPipe).name());
 }
@@ -33,7 +30,7 @@ void CommandPipe::Hook_CompileAndRun(RE::Script* a_script, RE::ScriptCompiler* a
 		a_script->SetCommand(cmd);
 		_outFile.open(*fileName);
 	}
-	
+
 	_CompileAndRun(a_script, a_compiler, a_name, a_targetRef);
 
 	if (_outFile.is_open()) {

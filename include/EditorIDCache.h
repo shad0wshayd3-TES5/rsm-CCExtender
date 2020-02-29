@@ -3,6 +3,7 @@
 #include <string>
 
 #include "RE/Skyrim.h"
+#include "REL/Relocation.h"
 
 
 class EditorIDCache
@@ -27,7 +28,7 @@ private:
 	EditorIDCache& operator=(const EditorIDCache&) = delete;
 	EditorIDCache& operator=(EditorIDCache&&) = delete;
 
-	static void WritePatch(std::uintptr_t a_hookAddr, std::uintptr_t a_funcAddr);
+	static void WritePatch(REL::ID a_hookID, std::uintptr_t a_funcAddr);
 	static bool Hook_SetFormEditorID(RE::TESForm* a_this, const char* a_str);
 
 
