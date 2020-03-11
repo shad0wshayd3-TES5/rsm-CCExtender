@@ -2,6 +2,7 @@
 
 #include "CommandPipe.h"
 #include "EditorIDCache.h"
+#include "SelectedRefColor.h"
 
 
 namespace Hooks
@@ -10,6 +11,7 @@ namespace Hooks
 	{
 		CommandPipe::InstallHooks();
 		EditorIDCache::InstallHooks();
+		SelectedRefColor::InstallHooks();
 		_MESSAGE("Installed all hooks");
 	}
 }

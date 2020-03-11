@@ -157,6 +157,7 @@
     <ClCompile Include="src\Help.cpp" />
     <ClCompile Include="src\Hooks.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\SelectedRefColor.cpp" />
     <ClCompile Include="src\SetPerkPoints.cpp" />
     <ClCompile Include="src\Settings.cpp" />
   </ItemGroup>
@@ -169,6 +170,7 @@
     <ClInclude Include="include\FormStringTable.h" />
     <ClInclude Include="include\Help.h" />
     <ClInclude Include="include\Hooks.h" />
+    <ClInclude Include="include\SelectedRefColor.h" />
     <ClInclude Include="include\SetPerkPoints.h" />
     <ClInclude Include="include\Settings.h" />
     <ClInclude Include="include\Utility.h" />

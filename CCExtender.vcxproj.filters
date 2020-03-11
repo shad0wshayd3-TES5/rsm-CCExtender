@@ -34,6 +34,9 @@
     <ClCompile Include="src\EditorIDCache.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\SelectedRefColor.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\version.h">
@@ -70,6 +73,9 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\Utility.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SelectedRefColor.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

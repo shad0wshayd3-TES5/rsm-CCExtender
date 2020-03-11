@@ -12,6 +12,7 @@
 Setting | Description
 --- | ---
 `betaCommentFileName` | The file path to print beta comment output to.
+`consoleSelectedRefColor` | Defines the RGBA values for highlighting references selected with the console. a value of `1.0` indicates `100%` and a value of `0.0` indicates `0%`
 
 ## Console commands
 <img width=120/> | <img width=120/>
