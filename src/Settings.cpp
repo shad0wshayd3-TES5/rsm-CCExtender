@@ -14,4 +14,4 @@ bool Settings::LoadSettings(bool a_dumpParse)
 
 
 decltype(Settings::betaCommentFileName) Settings::betaCommentFileName("betaCommentFileName", "betacomments.txt");
-decltype(Settings::consoleSelectedRefColor) Settings::consoleSelectedRefColor("consoleSelectedRefColor", std::in_place_t(), 0.51, 0.61, 0.62, 0.5);
+decltype(Settings::consoleSelectedRefColor) Settings::consoleSelectedRefColor("consoleSelectedRefColor", std::in_place_t(), 0.51F, 0.61F, 0.62F, 0.5F);

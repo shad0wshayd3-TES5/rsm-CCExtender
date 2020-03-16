@@ -45,8 +45,7 @@ void CommandPipe::CPrint(const char* a_string)
 {
 	std::string str((a_string ? a_string : ""));
 	auto task = SKSE::GetTaskInterface();
-	task->AddTask([str]()
-	{
+	task->AddTask([str]() {
 		auto console = RE::ConsoleLog::GetSingleton();
 		if (console) {
 			console->Print(str.c_str());

@@ -6,8 +6,7 @@
 bool Clear::Exec([[maybe_unused]] const RE::SCRIPT_PARAMETER* a_paramInfo, [[maybe_unused]] RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, [[maybe_unused]] RE::TESObjectREFR* a_thisObj, [[maybe_unused]] RE::TESObjectREFR* a_containingObj, [[maybe_unused]] RE::Script* a_scriptObj, [[maybe_unused]] RE::ScriptLocals* a_locals, [[maybe_unused]] double& a_result, [[maybe_unused]] UInt32& a_opcodeOffsetPtr)
 {
 	auto task = SKSE::GetTaskInterface();
-	task->AddUITask([]()
-	{
+	task->AddUITask([]() {
 		auto ui = RE::UI::GetSingleton();
 		if (!ui) {
 			return;
@@ -27,7 +26,7 @@ bool Clear::Exec([[maybe_unused]] const RE::SCRIPT_PARAMETER* a_paramInfo, [[may
 
 void Clear::Register()
 {
-	auto info = RE::SCRIPT_FUNCTION::LocateConsoleCommand("DumpNiUpdates");	// unused
+	auto info = RE::SCRIPT_FUNCTION::LocateConsoleCommand("DumpNiUpdates");	 // unused
 	if (info) {
 		info->functionName = LONG_NAME;
 		info->shortName = SHORT_NAME;

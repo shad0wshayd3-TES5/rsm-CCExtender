@@ -29,7 +29,7 @@ RE::FormType FormStringTable::MapStringToFormType(const std::string_view& a_stri
 	std::string str;
 	str.reserve(4);
 	for (auto ch : a_string) {
-		str.push_back(std::toupper(ch));
+		str.push_back(static_cast<char>(std::toupper(ch)));
 	}
 
 	auto it = _stringToFormTypeMap.find(str);

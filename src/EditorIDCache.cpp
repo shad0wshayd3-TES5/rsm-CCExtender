@@ -17,7 +17,7 @@ EditorIDCache* EditorIDCache::GetSingleton()
 
 void EditorIDCache::InstallHooks()
 {
-	WritePatch(REL::ID(10883), unrestricted_cast<std::uintptr_t>(&Hook_SetFormEditorID));	// 1_5_97
+	WritePatch(REL::ID(10883), unrestricted_cast<std::uintptr_t>(&Hook_SetFormEditorID));  // 1_5_97
 	_MESSAGE("Installed hooks for (%s)", typeid(EditorIDCache).name());
 }
 
@@ -45,7 +45,8 @@ void EditorIDCache::WritePatch(REL::ID a_hookID, std::uintptr_t a_funcAddr)
 
 	struct Patch : SKSE::CodeGenerator
 	{
-		Patch(std::size_t a_callAddr) : SKSE::CodeGenerator(CAVE_SIZE)
+		Patch(std::size_t a_callAddr) :
+			SKSE::CodeGenerator(CAVE_SIZE)
 		{
 			Xbyak::Label callLbl;
 

@@ -29,7 +29,7 @@ void SetPerkPoints::Register()
 {
 	using Type = RE::SCRIPT_PARAM_TYPE;
 
-	auto info = RE::SCRIPT_FUNCTION::LocateConsoleCommand("Timing");	// unused
+	auto info = RE::SCRIPT_FUNCTION::LocateConsoleCommand("Timing");  // unused
 	if (info) {
 		static RE::SCRIPT_PARAMETER params[] = {
 			{ "Integer", Type::kInt, 1 }

@@ -88,7 +88,7 @@ bool Help::Exec([[maybe_unused]] const RE::SCRIPT_PARAMETER* a_paramInfo, RE::SC
 
 	_needle = std::move(*matchString);
 	for (auto& ch : _needle) {
-		ch = std::tolower(ch);
+		ch = static_cast<char>(std::tolower(ch));
 	}
 
 #if _DEBUG
@@ -301,7 +301,7 @@ bool Help::Match(const std::string_view& a_haystack)
 
 	std::string haystack(a_haystack);
 	for (auto& ch : haystack) {
-		ch = std::tolower(ch);
+		ch = static_cast<char>(std::tolower(ch));
 	}
 
 	return kmp_search(haystack, _needle);
@@ -446,7 +446,7 @@ void Help::EnumerateForms(const FormType& a_formType)
 
 
 auto Help::GatherFormInfo(const FormType& a_formType)
--> std::optional<std::set<FormInfo>>
+	-> std::optional<std::set<FormInfo>>
 {
 	auto lookupInfo = RE::GlobalLookupInfo::GetSingleton();
 	RE::BSReadLockGuard locker(lookupInfo->allFormsMapLock);
