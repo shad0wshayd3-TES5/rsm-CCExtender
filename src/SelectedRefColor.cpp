@@ -1,21 +1,13 @@
 #include "SelectedRefColor.h"
 
-#include <typeinfo>
-
-#include "RE/Skyrim.h"
-#include "REL/Relocation.h"
-#include "SKSE/API.h"
-
 #include "Settings.h"
-
 
 void SelectedRefColor::InstallHooks()
 {
 	REL::Offset<std::uintptr_t> vtbl = REL::ID(268119);	 // Console vtbl
-	_processMessage = vtbl.WriteVFunc(0x4, ProcessMessage);
+	_processMessage = vtbl.write_vfunc(0x4, ProcessMessage);
 	_MESSAGE("Installed hooks for %s", typeid(SelectedRefColor).name());
 }
-
 
 auto SelectedRefColor::ProcessMessage(RE::IMenu* a_menu, RE::UIMessage& a_message)
 	-> UIResult
@@ -49,7 +41,6 @@ auto SelectedRefColor::ProcessMessage(RE::IMenu* a_menu, RE::UIMessage& a_messag
 	return _processMessage(a_menu, a_message);
 }
 
-
 void SelectedRefColor::ClearColor()
 {
 	auto task = SKSE::GetTaskInterface();
@@ -63,7 +54,6 @@ void SelectedRefColor::ClearColor()
 	});
 }
 
-
 void SelectedRefColor::SetColor()
 {
 	auto task = SKSE::GetTaskInterface();
@@ -75,7 +65,6 @@ void SelectedRefColor::SetColor()
 		}
 	});
 }
-
 
 void SelectedRefColor::UpdateRef()
 {

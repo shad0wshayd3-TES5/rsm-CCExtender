@@ -5,7 +5,6 @@
 #include "Help.h"
 #include "SetPerkPoints.h"
 
-
 namespace Commands
 {
 	void Install()

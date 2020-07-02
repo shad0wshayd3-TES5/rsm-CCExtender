@@ -1,12 +1,10 @@
 #include "FormStringTable.h"
 
-
 FormStringTable* FormStringTable::GetSingleton()
 {
 	static FormStringTable singleton;
-	return &singleton;
+	return std::addressof(singleton);
 }
-
 
 std::string_view FormStringTable::MapFormTypeToString(RE::FormType a_formType)
 {
@@ -18,7 +16,6 @@ std::string_view FormStringTable::MapFormTypeToString(RE::FormType a_formType)
 		return "EROR";
 	}
 }
-
 
 RE::FormType FormStringTable::MapStringToFormType(const std::string_view& a_string)
 {
@@ -35,7 +32,6 @@ RE::FormType FormStringTable::MapStringToFormType(const std::string_view& a_stri
 	auto it = _stringToFormTypeMap.find(str);
 	return it != _stringToFormTypeMap.end() ? it->second : RE::FormType::None;
 }
-
 
 FormStringTable::FormStringTable() :
 	_formTypeToStringMap(),
@@ -189,7 +185,6 @@ FormStringTable::FormStringTable() :
 		assert(false);
 	}
 }
-
 
 void FormStringTable::Insert(RE::FormType a_formType, const char* a_string)
 {

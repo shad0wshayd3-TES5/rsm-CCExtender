@@ -1,15 +1,6 @@
 #pragma once
 
-#include <algorithm>
-#include <array>
-
-#include "RE/Skyrim.h"
-
-#include "Json2Settings.h"
-
-
 namespace J2S = Json2Settings;
-
 
 namespace RE
 {
@@ -31,7 +22,6 @@ namespace RE
 	}
 }
 
-
 class Settings
 {
 public:
@@ -39,9 +29,8 @@ public:
 
 	static bool LoadSettings(bool a_dumpParse = false);
 
-
-	static J2S::sSetting betaCommentFileName;
-	static J2S::oSetting<RE::NiColorA> consoleSelectedRefColor;
+	static inline J2S::sSetting betaCommentFileName{ "betaCommentFileName", "betacomments.txt" };
+	static inline J2S::oSetting<RE::NiColorA> consoleSelectedRefColor{ "consoleSelectedRefColor", std::in_place_t(), 0.51F, 0.61F, 0.62F, 0.5F };
 
 private:
 	static inline constexpr char FILE_NAME[] = "Data\\SKSE\\Plugins\\CCExtender.json";

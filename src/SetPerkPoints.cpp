@@ -1,7 +1,6 @@
 #include "SetPerkPoints.h"
 
-
-bool SetPerkPoints::Exec([[maybe_unused]] const RE::SCRIPT_PARAMETER* a_paramInfo, RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, [[maybe_unused]] RE::TESObjectREFR* a_thisObj, [[maybe_unused]] RE::TESObjectREFR* a_containingObj, [[maybe_unused]] RE::Script* a_scriptObj, [[maybe_unused]] RE::ScriptLocals* a_locals, [[maybe_unused]] double& a_result, [[maybe_unused]] UInt32& a_opcodeOffsetPtr)
+bool SetPerkPoints::Exec(const RE::SCRIPT_PARAMETER*, RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, RE::TESObjectREFR*, RE::TESObjectREFR*, RE::Script*, RE::ScriptLocals*, double&, UInt32&)
 {
 	auto num = a_scriptData->GetIntegerChunk()->GetInteger();
 	if (num < 0) {
@@ -23,7 +22,6 @@ bool SetPerkPoints::Exec([[maybe_unused]] const RE::SCRIPT_PARAMETER* a_paramInf
 
 	return true;
 }
-
 
 void SetPerkPoints::Register()
 {
@@ -49,7 +47,6 @@ void SetPerkPoints::Register()
 	}
 }
 
-
 const char* SetPerkPoints::HelpStr()
 {
 	static std::string help;
@@ -60,7 +57,6 @@ const char* SetPerkPoints::HelpStr()
 	}
 	return help.c_str();
 }
-
 
 void SetPerkPoints::CPrint(const char* a_fmt, ...)
 {

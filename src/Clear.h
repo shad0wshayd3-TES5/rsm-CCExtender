@@ -1,8 +1,5 @@
 #pragma once
 
-#include "RE/Skyrim.h"
-
-
 class Clear
 {
 public:
@@ -19,7 +16,6 @@ private:
 	Clear& operator=(Clear&&) = delete;
 
 	static const char* HelpStr();
-
 
 	static constexpr char LONG_NAME[] = "Clear";
 	static constexpr char SHORT_NAME[] = "";

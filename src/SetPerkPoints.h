@@ -1,8 +1,5 @@
 #pragma once
 
-#include "RE/Skyrim.h"
-
-
 class SetPerkPoints
 {
 public:
@@ -20,7 +17,6 @@ private:
 
 	static const char* HelpStr();
 	static void CPrint(const char* a_fmt, ...);
-
 
 	static constexpr char LONG_NAME[] = "SetPerkPoints";
 	static constexpr char SHORT_NAME[] = "SPP";

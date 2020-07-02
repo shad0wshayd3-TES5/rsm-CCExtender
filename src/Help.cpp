@@ -2,79 +2,8 @@
 
 #include "EditorIDCache.h"
 #include "FormStringTable.h"
-#include "Utility.h"
 
-
-namespace
-{
-	void StopWatch::Start()
-	{
-		_start = std::chrono::high_resolution_clock::now();
-	}
-
-
-	void StopWatch::TimeStamp()
-	{
-		auto end = std::chrono::high_resolution_clock::now();
-		std::chrono::duration<double> diff = end - _start;
-		_MESSAGE("Milestone: %gs", diff.count());
-	}
-
-
-	void kmp_table(const std::string_view& W, std::vector<std::size_t>& T)
-	{
-		std::size_t pos = 1;
-		std::size_t cnd = 0;
-
-		T[0] = NPOS;
-
-		while (pos < W.size()) {
-			if (W[pos] == W[cnd]) {
-				T[pos] = T[cnd];
-			} else {
-				T[pos] = cnd;
-				cnd = T[cnd];
-				while (cnd != NPOS && W[pos] != W[cnd]) {
-					cnd = T[cnd];
-				}
-			}
-			++pos;
-			++cnd;
-		}
-
-		T[pos] = cnd;
-	}
-
-
-	bool kmp_search(const std::string_view& S, const std::string_view& W)
-	{
-		std::size_t j = 0;
-		std::size_t k = 0;
-		std::vector<std::size_t> T(W.size() + 1);
-		kmp_table(W, T);
-
-		while (j < S.size()) {
-			if (W[k] == S[j]) {
-				++j;
-				++k;
-				if (k == W.size()) {
-					return true;
-				}
-			} else {
-				k = T[k];
-				if (k == NPOS) {
-					++j;
-					++k;
-				}
-			}
-		}
-
-		return false;
-	}
-}
-
-
-bool Help::Exec([[maybe_unused]] const RE::SCRIPT_PARAMETER* a_paramInfo, RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, [[maybe_unused]] RE::TESObjectREFR* a_thisObj, [[maybe_unused]] RE::TESObjectREFR* a_containingObj, [[maybe_unused]] RE::Script* a_scriptObj, [[maybe_unused]] RE::ScriptLocals* a_locals, [[maybe_unused]] double& a_result, [[maybe_unused]] UInt32& a_opcodeOffsetPtr)
+bool Help::Exec(const RE::SCRIPT_PARAMETER*, RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, RE::TESObjectREFR*, RE::TESObjectREFR*, RE::Script*, RE::ScriptLocals*, double&, UInt32&)
 {
 	MatchString matchString;
 	Filter filter;
@@ -118,7 +47,6 @@ bool Help::Exec([[maybe_unused]] const RE::SCRIPT_PARAMETER* a_paramInfo, RE::SC
 	return true;
 }
 
-
 void Help::Register()
 {
 	using Type = RE::SCRIPT_PARAM_TYPE;
@@ -145,17 +73,27 @@ void Help::Register()
 	}
 }
 
-
 Help::FormInfo::FormInfo(RE::TESForm* a_form) :
+	_pluginName(""),
 	_editorID(""),
 	_fullName(""),
 	_formID(a_form->formID),
 	_formType(a_form->formType)
 {
+	assert(a_form != nullptr);
+
+	auto plugin = a_form->GetDescriptionOwnerFile();
+	if (plugin) {
+		_pluginName = plugin->fileName;
+		if (!_pluginName.empty()) {
+			_pluginName += ' ';
+		}
+	}
+
 	auto cache = EditorIDCache::GetSingleton();
 	_editorID = cache->GetEditorID(a_form);
 	if (!_editorID.empty()) {
-		_editorID.push_back(' ');
+		_editorID += ' ';
 	}
 
 	_fullName = GetFullName(a_form);
@@ -163,7 +101,6 @@ Help::FormInfo::FormInfo(RE::TESForm* a_form) :
 		_fullName = " '" + _fullName + '\'';
 	}
 }
-
 
 bool Help::FormInfo::operator<(const FormInfo& a_rhs) const
 {
@@ -174,20 +111,17 @@ bool Help::FormInfo::operator<(const FormInfo& a_rhs) const
 	return _formID < a_rhs._formID;
 }
 
-
 RE::FormType Help::FormInfo::GetFormType() const
 {
 	return _formType;
 }
 
-
 void Help::FormInfo::Print() const
 {
 	auto strTable = FormStringTable::GetSingleton();
 	auto typeString = strTable->MapFormTypeToString(_formType);
-	CPrint("%s: %s(%08X)%s", typeString.data(), _editorID.c_str(), _formID, _fullName.c_str());
+	CPrint("%s%s: %s(%08X)%s", _pluginName.c_str(), typeString.data(), _editorID.c_str(), _formID, _fullName.c_str());
 }
-
 
 Help::Setting::Setting(const RE::Setting* a_setting) :
 	_setting(a_setting),
@@ -196,12 +130,10 @@ Help::Setting::Setting(const RE::Setting* a_setting) :
 	assert(_setting);
 }
 
-
 bool Help::Setting::operator<(const Setting& a_rhs) const
 {
 	return _stricmp(_name.c_str(), a_rhs._name.c_str()) < 0;
 }
-
 
 void Help::Setting::Print() const
 {
@@ -235,7 +167,6 @@ void Help::Setting::Print() const
 	}
 }
 
-
 const char* Help::HelpStr()
 {
 	static std::string help;
@@ -254,7 +185,6 @@ const char* Help::HelpStr()
 	return help.c_str();
 }
 
-
 void Help::CPrint(const char* a_fmt, ...)
 {
 	auto console = RE::ConsoleLog::GetSingleton();
@@ -265,7 +195,6 @@ void Help::CPrint(const char* a_fmt, ...)
 		va_end(args);
 	}
 }
-
 
 void Help::ParseParams(RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, MatchString& a_matchString, Filter& a_filter, FormType& a_formType)
 {
@@ -292,7 +221,6 @@ void Help::ParseParams(RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, MatchStrin
 	a_formType = std::make_optional(strChunk->GetString());
 }
 
-
 bool Help::Match(const std::string_view& a_haystack)
 {
 	if (a_haystack.length() == 0 || _needle.length() > a_haystack.length()) {
@@ -304,9 +232,8 @@ bool Help::Match(const std::string_view& a_haystack)
 		ch = static_cast<char>(std::tolower(ch));
 	}
 
-	return kmp_search(haystack, _needle);
+	return kmp_search({ haystack.c_str(), haystack.size() }, { _needle.c_str(), _needle.size() });
 }
-
 
 std::string_view Help::GetFullName(RE::TESForm* a_form)
 {
@@ -331,7 +258,6 @@ std::string_view Help::GetFullName(RE::TESForm* a_form)
 	return result;
 }
 
-
 void Help::EnumerateFunctions()
 {
 	CPrint("----CONSOLE COMMANDS--------------------");
@@ -343,15 +269,14 @@ void Help::EnumerateFunctions()
 	EnumerateFunctions(iter, iter + RE::SCRIPT_FUNCTION::Commands::kScriptCommandsEnd);
 }
 
-
 void Help::EnumerateFunctions(RE::SCRIPT_FUNCTION* a_beg, RE::SCRIPT_FUNCTION* a_end)
 {
 	std::string_view commandName;
 	std::string_view longNameV;
 	std::string_view shortNameV;
 	for (auto it = a_beg; it != a_end; ++it) {
-		longNameV = safe_cstr(it->functionName);
-		shortNameV = safe_cstr(it->shortName);
+		longNameV = safe_string(it->functionName);
+		shortNameV = safe_string(it->shortName);
 		for (std::size_t j = 0; j < 2; ++j) {
 			switch (j) {
 			case 0:
@@ -371,7 +296,7 @@ void Help::EnumerateFunctions(RE::SCRIPT_FUNCTION* a_beg, RE::SCRIPT_FUNCTION* a
 					shortName = " (" + shortName + ")";
 				}
 
-				std::string helpText(safe_cstr(it->helpString));
+				std::string helpText{ safe_string(it->helpString) };
 				if (!helpText.empty()) {
 					helpText = " -> " + helpText;
 				}
@@ -382,7 +307,6 @@ void Help::EnumerateFunctions(RE::SCRIPT_FUNCTION* a_beg, RE::SCRIPT_FUNCTION* a
 		}
 	}
 }
-
 
 void Help::EnumerateSettings()
 {
@@ -415,7 +339,6 @@ void Help::EnumerateSettings()
 	}
 }
 
-
 void Help::EnumerateGlobals()
 {
 	CPrint("----GLOBAL VARIABLES--------------------");
@@ -424,13 +347,12 @@ void Help::EnumerateGlobals()
 	auto& globals = dataHandler->GetFormArray<RE::TESGlobal>();
 	std::string editorID;
 	for (auto& global : globals) {
-		editorID = safe_cstr(global->GetFormEditorID());
+		editorID = safe_string(global->GetFormEditorID());
 		if (Match(editorID)) {
 			CPrint("%s = %0.2f", editorID.c_str(), global->value);
 		}
 	}
 }
-
 
 void Help::EnumerateForms(const FormType& a_formType)
 {
@@ -444,16 +366,15 @@ void Help::EnumerateForms(const FormType& a_formType)
 	}
 }
 
-
 auto Help::GatherFormInfo(const FormType& a_formType)
 	-> std::optional<std::set<FormInfo>>
 {
-	auto lookupInfo = RE::GlobalLookupInfo::GetSingleton();
-	RE::BSReadLockGuard locker(lookupInfo->allFormsMapLock);
-	if (!lookupInfo->allForms) {
+	auto [allForms, lock] = RE::TESForm::GetAllForms();
+	RE::BSReadLockGuard locker(lock);
+	if (!allForms) {
 		return std::nullopt;
 	}
-	auto& formMap = *lookupInfo->allForms;
+	auto& formMap = *allForms;
 
 	auto strTable = FormStringTable::GetSingleton();
 	auto formFilter = a_formType ? strTable->MapStringToFormType(*a_formType) : RE::FormType::None;
@@ -494,11 +415,5 @@ auto Help::GatherFormInfo(const FormType& a_formType)
 		}
 	}
 
-	return std::make_optional(std::move(formInfoSet));
+	return { std::move(formInfoSet) };
 }
-
-
-decltype(Help::_needle) Help::_needle;
-#if _DEBUG
-decltype(Help::_stopWatch) Help::_stopWatch;
-#endif

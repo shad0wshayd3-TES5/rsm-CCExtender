@@ -1,9 +1,5 @@
 #pragma once
 
-#include "RE/Skyrim.h"
-#include "REL/Relocation.h"
-
-
 class SelectedRefColor
 {
 public:
@@ -11,7 +7,6 @@ public:
 
 private:
 	using UIResult = RE::UI_MESSAGE_RESULTS;
-
 
 	SelectedRefColor() = delete;
 	SelectedRefColor(const SelectedRefColor&) = delete;
@@ -27,7 +22,6 @@ private:
 	static void SetColor();
 	static void UpdateRef();
 
-
-	static inline REL::Function<decltype(&RE::IMenu::ProcessMessage)> _processMessage;
-	static inline RE::TESObjectREFRPtr _cachedRef;
+	static inline REL::Offset<decltype(&RE::IMenu::ProcessMessage)> _processMessage{};
+	static inline RE::TESObjectREFRPtr _cachedRef{};
 };

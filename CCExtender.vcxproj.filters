@@ -1,96 +1,96 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\main.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Help.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FormStringTable.cpp">
+    <Filter Include="src">
+      <UniqueIdentifier>{c44f4b92-8115-488a-9ed0-7f9cd0a29487}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\BetaComment.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\Clear.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Commands.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Hooks.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\CommandPipe.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\BetaComment.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Settings.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SetPerkPoints.cpp">
+    <ClCompile Include="src\Commands.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\EditorIDCache.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\FormStringTable.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Help.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hooks.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PCH.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
     <ClCompile Include="src\SelectedRefColor.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SetPerkPoints.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Settings.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\version.h">
-      <Filter>include</Filter>
+    <ClInclude Include="src\BetaComment.h">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="include\Help.h">
-      <Filter>include</Filter>
+    <ClInclude Include="src\Clear.h">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="include\FormStringTable.h">
-      <Filter>include</Filter>
+    <ClInclude Include="src\CommandPipe.h">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="include\Clear.h">
-      <Filter>include</Filter>
+    <ClInclude Include="src\Commands.h">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="include\Commands.h">
-      <Filter>include</Filter>
+    <ClInclude Include="src\EditorIDCache.h">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="include\Hooks.h">
-      <Filter>include</Filter>
+    <ClInclude Include="src\FormStringTable.h">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="include\CommandPipe.h">
-      <Filter>include</Filter>
+    <ClInclude Include="src\Help.h">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="include\BetaComment.h">
-      <Filter>include</Filter>
+    <ClInclude Include="src\Hooks.h">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="include\Settings.h">
-      <Filter>include</Filter>
+    <ClInclude Include="src\PCH.h">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="include\SetPerkPoints.h">
-      <Filter>include</Filter>
+    <ClInclude Include="src\SelectedRefColor.h">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="include\EditorIDCache.h">
-      <Filter>include</Filter>
+    <ClInclude Include="src\SetPerkPoints.h">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="include\Utility.h">
-      <Filter>include</Filter>
+    <ClInclude Include="src\Settings.h">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="include\SelectedRefColor.h">
-      <Filter>include</Filter>
+    <ClInclude Include="src\version.h">
+      <Filter>src</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".clang-format" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="version.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="exports.def" />
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="include">
-      <UniqueIdentifier>{5b4753d0-a12a-45de-a25f-3da9c119def2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src">
-      <UniqueIdentifier>{238172b9-863c-48b4-aabe-a4f4950d1181}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
 </Project>

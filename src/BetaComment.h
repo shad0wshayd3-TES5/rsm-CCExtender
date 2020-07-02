@@ -1,14 +1,5 @@
 #pragma once
 
-#include <lmcons.h>
-
-#include <fstream>
-#include <sstream>
-#include <string>
-
-#include "RE/Skyrim.h"
-
-
 class BetaComment
 {
 public:
@@ -17,7 +8,6 @@ public:
 
 private:
 	using Buffer = std::stringstream;
-
 
 	BetaComment() = delete;
 	BetaComment(const BetaComment&) = delete;
@@ -42,11 +32,10 @@ private:
 	static bool PrintTime(Buffer& a_buf);
 	static bool PrintUserName(Buffer& a_buf);
 
-
 	static constexpr char LONG_NAME[] = "BetaComment";
 	static constexpr char SHORT_NAME[] = "BC";
-	static constexpr char _DELIM = '\t';
-	static std::ofstream _file;
-	static inline RE::TESObjectREFR* _ref = 0;
-	static CHAR _userName[UNLEN + 1];
+	static constexpr char _DELIM{ '\t' };
+	static inline std::ofstream _file{};
+	static inline RE::TESObjectREFR* _ref{ nullptr };
+	static inline CHAR _userName[UNLEN + 1]{ '\0' };
 };

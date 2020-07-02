@@ -1,26 +1,16 @@
 #include "EditorIDCache.h"
 
-#include <cassert>
-#include <typeinfo>
-
-#include "SKSE/API.h"
-#include "SKSE/CodeGenerator.h"
-#include "SKSE/SafeWrite.h"
-
-
 EditorIDCache* EditorIDCache::GetSingleton()
 {
 	static EditorIDCache singleton;
-	return &singleton;
+	return std::addressof(singleton);
 }
-
 
 void EditorIDCache::InstallHooks()
 {
 	WritePatch(REL::ID(10883), unrestricted_cast<std::uintptr_t>(&Hook_SetFormEditorID));  // 1_5_97
 	_MESSAGE("Installed hooks for (%s)", typeid(EditorIDCache).name());
 }
-
 
 std::string EditorIDCache::GetEditorID(RE::TESForm* a_form) const
 {
@@ -35,7 +25,6 @@ std::string EditorIDCache::GetEditorID(RE::TESForm* a_form) const
 	auto it = _idMap.find(a_form->GetFormID());
 	return it != _idMap.end() ? it->second : "";
 }
-
 
 void EditorIDCache::WritePatch(REL::ID a_hookID, std::uintptr_t a_funcAddr)
 {
@@ -57,14 +46,13 @@ void EditorIDCache::WritePatch(REL::ID a_hookID, std::uintptr_t a_funcAddr)
 		}
 	};
 
-	Patch patch(a_funcAddr);
-	patch.finalize();
+	Patch patch{ a_funcAddr };
+	patch.ready();
 
 	for (std::size_t i = 0; i < patch.getSize(); ++i) {
-		SKSE::SafeWrite8(funcBase.GetAddress() + i, patch.getCode()[i]);
+		SKSE::SafeWrite8(funcBase.address() + i, patch.getCode()[i]);
 	}
 }
-
 
 bool EditorIDCache::Hook_SetFormEditorID(RE::TESForm* a_this, const char* a_str)
 {

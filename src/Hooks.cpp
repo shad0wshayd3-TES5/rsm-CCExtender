@@ -4,7 +4,6 @@
 #include "EditorIDCache.h"
 #include "SelectedRefColor.h"
 
-
 namespace Hooks
 {
 	void Install()

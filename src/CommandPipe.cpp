@@ -1,24 +1,15 @@
 #include "CommandPipe.h"
 
-#include <ios>
-#include <typeinfo>
-
-#include "REL/Relocation.h"
-#include "SKSE/API.h"
-#include "SKSE/Trampoline.h"
-
-
 void CommandPipe::InstallHooks()
 {
-	REL::Offset<std::uintptr_t> hookPoint(REL::ID(52065), 0xE2);
+	REL::Offset<std::uintptr_t> hookPoint{ REL::ID(52065), 0xE2 };
 	auto trampoline = SKSE::GetTrampoline();
-	_CompileAndRun = trampoline->Write5CallEx(hookPoint.GetAddress(), &CommandPipe::Hook_CompileAndRun);
+	_CompileAndRun = trampoline->Write5CallEx(hookPoint.address(), CompileAndRun);
 
 	_MESSAGE("Installed hooks for class (%s)", typeid(CommandPipe).name());
 }
 
-
-void CommandPipe::Hook_CompileAndRun(RE::Script* a_script, RE::ScriptCompiler* a_compiler, RE::COMPILER_NAME a_name, RE::TESObjectREFR* a_targetRef)
+void CommandPipe::CompileAndRun(RE::Script* a_script, RE::ScriptCompiler* a_compiler, RE::COMPILER_NAME a_name, RE::TESObjectREFR* a_targetRef)
 {
 	auto cmd = a_script->GetCommand();
 	std::optional<std::string> fileName;
@@ -40,7 +31,6 @@ void CommandPipe::Hook_CompileAndRun(RE::Script* a_script, RE::ScriptCompiler* a
 	}
 }
 
-
 void CommandPipe::CPrint(const char* a_string)
 {
 	std::string str((a_string ? a_string : ""));
@@ -52,7 +42,6 @@ void CommandPipe::CPrint(const char* a_string)
 		}
 	});
 }
-
 
 bool CommandPipe::Parse(std::string& a_command, std::optional<std::string>& a_fileName)
 {
@@ -123,6 +112,3 @@ bool CommandPipe::Parse(std::string& a_command, std::optional<std::string>& a_fi
 	}
 	return true;
 }
-
-
-decltype(CommandPipe::_outFile) CommandPipe::_outFile;

@@ -1,11 +1,5 @@
 #pragma once
 
-#include <string_view>
-#include <unordered_map>
-
-#include "RE/Skyrim.h"
-
-
 class FormStringTable
 {
 public:
@@ -23,9 +17,7 @@ private:
 	FormStringTable& operator=(const FormStringTable&) = delete;
 	FormStringTable& operator=(FormStringTable&&) = delete;
 
-
 	void Insert(RE::FormType a_formType, const char* a_string);
-
 
 	std::unordered_map<RE::FormType, std::string_view> _formTypeToStringMap;
 	std::unordered_map<std::string_view, RE::FormType> _stringToFormTypeMap;

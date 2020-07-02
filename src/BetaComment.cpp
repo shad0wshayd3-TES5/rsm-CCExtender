@@ -1,20 +1,8 @@
 #include "BetaComment.h"
 
-#include <timezoneapi.h>
-
-#include <cstdarg>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-#include <iomanip>
-#include <sstream>
-#include <type_traits>
-
 #include "Settings.h"
-#include "Utility.h"
 
-
-bool BetaComment::Exec([[maybe_unused]] const RE::SCRIPT_PARAMETER* a_paramInfo, RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, [[maybe_unused]] RE::TESObjectREFR* a_thisObj, [[maybe_unused]] RE::TESObjectREFR* a_containingObj, [[maybe_unused]] RE::Script* a_scriptObj, [[maybe_unused]] RE::ScriptLocals* a_locals, [[maybe_unused]] double& a_result, [[maybe_unused]] UInt32& a_opcodeOffsetPtr)
+bool BetaComment::Exec(const RE::SCRIPT_PARAMETER*, RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, RE::TESObjectREFR*, RE::TESObjectREFR*, RE::Script*, RE::ScriptLocals*, double&, UInt32&)
 {
 	if (!_file.is_open()) {
 		CPrint("> [%s] ERROR: Failed to open output file", LONG_NAME);
@@ -35,7 +23,6 @@ bool BetaComment::Exec([[maybe_unused]] const RE::SCRIPT_PARAMETER* a_paramInfo,
 
 	return true;
 }
-
 
 void BetaComment::Register()
 {
@@ -65,7 +52,6 @@ void BetaComment::Register()
 	}
 }
 
-
 void BetaComment::CPrint(const char* a_fmt, ...)
 {
 	auto console = RE::ConsoleLog::GetSingleton();
@@ -77,7 +63,6 @@ void BetaComment::CPrint(const char* a_fmt, ...)
 	}
 }
 
-
 const char* BetaComment::HelpStr()
 {
 	static std::string help;
@@ -88,7 +73,6 @@ const char* BetaComment::HelpStr()
 	}
 	return help.c_str();
 }
-
 
 void BetaComment::Init()
 {
@@ -102,7 +86,6 @@ void BetaComment::Init()
 		strcpy_s(_userName, USERNAME_SIZE, "SEE-LOG-FOR-ERROR");
 	}
 }
-
 
 void BetaComment::LogComment(const std::string& a_comment)
 {
@@ -169,7 +152,6 @@ void BetaComment::LogComment(const std::string& a_comment)
 	_file.flush();
 }
 
-
 bool BetaComment::PrintCellCoordinates(Buffer& a_buf)
 {
 	auto cell = _ref->GetParentCell();
@@ -187,7 +169,6 @@ bool BetaComment::PrintCellCoordinates(Buffer& a_buf)
 	return true;
 }
 
-
 bool BetaComment::PrintCellEditorID(Buffer& a_buf)
 {
 	auto cell = _ref->GetParentCell();
@@ -195,7 +176,7 @@ bool BetaComment::PrintCellEditorID(Buffer& a_buf)
 		return false;
 	}
 
-	std::string editorID = safe_cstr(cell->GetFormEditorID());
+	std::string editorID{ safe_string(cell->GetFormEditorID()) };
 	if (editorID.empty()) {
 		return false;
 	}
@@ -204,7 +185,6 @@ bool BetaComment::PrintCellEditorID(Buffer& a_buf)
 
 	return true;
 }
-
 
 bool BetaComment::PrintCellFormID(Buffer& a_buf)
 {
@@ -215,17 +195,15 @@ bool BetaComment::PrintCellFormID(Buffer& a_buf)
 	return true;
 }
 
-
 bool BetaComment::PrintRefCoordinates(Buffer& a_buf)
 {
 	a_buf << std::floor(_ref->GetPositionX()) << ", " << std::floor(_ref->GetPositionY()) << ", " << std::floor(_ref->GetPositionZ());
 	return true;
 }
 
-
 bool BetaComment::PrintRefEditorID(Buffer& a_buf)
 {
-	std::string editorID = safe_cstr(_ref->GetFormEditorID());
+	std::string editorID{ safe_string(_ref->GetFormEditorID()) };
 	if (editorID.empty()) {
 		return false;
 	}
@@ -235,7 +213,6 @@ bool BetaComment::PrintRefEditorID(Buffer& a_buf)
 	return true;
 }
 
-
 bool BetaComment::PrintRefFormID(Buffer& a_buf)
 {
 	char formID[] = "0xDEADBEEF";
@@ -243,7 +220,6 @@ bool BetaComment::PrintRefFormID(Buffer& a_buf)
 	a_buf << formID;
 	return true;
 }
-
 
 bool BetaComment::PrintSourceFile(Buffer& a_buf)
 {
@@ -256,7 +232,6 @@ bool BetaComment::PrintSourceFile(Buffer& a_buf)
 
 	return true;
 }
-
 
 bool BetaComment::PrintTime(Buffer& a_buf)
 {
@@ -272,13 +247,8 @@ bool BetaComment::PrintTime(Buffer& a_buf)
 	return true;
 }
 
-
 bool BetaComment::PrintUserName(Buffer& a_buf)
 {
 	a_buf << _userName;
 	return true;
 }
-
-
-decltype(BetaComment::_file) BetaComment::_file;
-decltype(BetaComment::_userName) BetaComment::_userName = { 0 };

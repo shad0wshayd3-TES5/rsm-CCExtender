@@ -1,34 +1,5 @@
 #pragma once
 
-#include <chrono>
-#include <optional>
-#include <set>
-#include <string>
-#include <string_view>
-
-#include "RE/Skyrim.h"
-
-
-namespace
-{
-	class StopWatch
-	{
-	public:
-		void Start();
-		void TimeStamp();
-
-	private:
-		std::chrono::time_point<std::chrono::high_resolution_clock> _start;
-	};
-
-
-	// https://en.wikipedia.org/wiki/Knuth-Morris-Pratt_algorithm
-	constexpr auto NPOS = static_cast<std::size_t>(-1);
-	void kmp_table(const std::string_view& W, std::vector<std::size_t>& T);
-	bool kmp_search(const std::string_view& S, const std::string_view& W);
-}
-
-
 class Help
 {
 public:
@@ -43,7 +14,11 @@ private:
 		FormInfo(const FormInfo&) = default;
 		FormInfo(FormInfo&&) = default;
 		FormInfo(RE::TESForm* a_form);
+
 		~FormInfo() = default;
+
+		FormInfo& operator=(const FormInfo&) = default;
+		FormInfo& operator=(FormInfo&&) = default;
 
 		bool operator<(const FormInfo& a_rhs) const;
 
@@ -51,12 +26,12 @@ private:
 		void Print() const;
 
 	private:
+		std::string _pluginName;
 		std::string _editorID;
 		std::string _fullName;
 		RE::FormID _formID;
 		RE::FormType _formType;
 	};
-
 
 	class Setting
 	{
@@ -65,7 +40,11 @@ private:
 		Setting(const Setting&) = default;
 		Setting(Setting&&) = default;
 		Setting(const RE::Setting* a_setting);
+
 		~Setting() = default;
+
+		Setting& operator=(const Setting&) = default;
+		Setting& operator=(Setting&&) = default;
 
 		bool operator<(const Setting& a_rhs) const;
 
@@ -76,7 +55,6 @@ private:
 		std::string _name;
 	};
 
-
 	enum class FilterType : SInt32
 	{
 		kAll = 0,
@@ -86,11 +64,9 @@ private:
 		kForms = 4
 	};
 
-
 	using MatchString = std::optional<std::string>;
 	using Filter = std::optional<FilterType>;
 	using FormType = std::optional<std::string>;
-
 
 	Help() = delete;
 	Help(const Help&) = delete;
@@ -112,11 +88,10 @@ private:
 	static void EnumerateForms(const FormType& a_formType);
 	static std::optional<std::set<FormInfo>> GatherFormInfo(const FormType& a_formType);
 
-
 	static constexpr char LONG_NAME[] = "Help";
 	static constexpr char SHORT_NAME[] = "";
-	static std::string _needle;
+	static inline std::string _needle{};
 #if _DEBUG
-	static StopWatch _stopWatch;
+	static inline StopWatch _stopWatch{};
 #endif
 };
