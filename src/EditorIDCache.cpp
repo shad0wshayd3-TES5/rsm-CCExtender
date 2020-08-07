@@ -8,8 +8,8 @@ EditorIDCache* EditorIDCache::GetSingleton()
 
 void EditorIDCache::InstallHooks()
 {
-	WritePatch(REL::ID(10883), unrestricted_cast<std::uintptr_t>(&Hook_SetFormEditorID));  // 1_5_97
-	_MESSAGE("Installed hooks for (%s)", typeid(EditorIDCache).name());
+	WritePatch(REL::ID(10883), unrestricted_cast<std::uintptr_t>(&Hook_SetFormEditorID));
+	logger::info(FMT_STRING("Installed hooks for ({})"), typeid(EditorIDCache).name());
 }
 
 std::string EditorIDCache::GetEditorID(RE::TESForm* a_form) const
@@ -30,12 +30,11 @@ void EditorIDCache::WritePatch(REL::ID a_hookID, std::uintptr_t a_funcAddr)
 {
 	constexpr std::size_t CAVE_SIZE = 0x20;
 
-	REL::Offset<std::uintptr_t> funcBase = a_hookID;
+	REL::Relocation<std::uintptr_t> funcBase{ a_hookID };
 
-	struct Patch : SKSE::CodeGenerator
+	struct Patch : Xbyak::CodeGenerator
 	{
-		Patch(std::size_t a_callAddr) :
-			SKSE::CodeGenerator(CAVE_SIZE)
+		Patch(std::size_t a_callAddr)
 		{
 			Xbyak::Label callLbl;
 
@@ -48,10 +47,9 @@ void EditorIDCache::WritePatch(REL::ID a_hookID, std::uintptr_t a_funcAddr)
 
 	Patch patch{ a_funcAddr };
 	patch.ready();
+	assert(patch.getSize() <= CAVE_SIZE);
 
-	for (std::size_t i = 0; i < patch.getSize(); ++i) {
-		SKSE::SafeWrite8(funcBase.address() + i, patch.getCode()[i]);
-	}
+	REL::safe_write(funcBase.address(), stl::span{ patch.getCode(), patch.getSize() });
 }
 
 bool EditorIDCache::Hook_SetFormEditorID(RE::TESForm* a_this, const char* a_str)

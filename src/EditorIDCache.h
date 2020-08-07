@@ -25,5 +25,5 @@ private:
 	static bool Hook_SetFormEditorID(RE::TESForm* a_this, const char* a_str);
 
 	mutable Lock _lock;
-	std::unordered_map<RE::FormID, EditorID> _idMap;
+	robin_hood::unordered_flat_map<RE::FormID, EditorID> _idMap;
 };

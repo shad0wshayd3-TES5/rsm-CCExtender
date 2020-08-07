@@ -4,6 +4,8 @@
 #include "REL/Relocation.h"
 #include "SKSE/SKSE.h"
 
+#include "Json2Settings.h"
+
 #include <algorithm>
 #include <array>
 #include <cassert>
@@ -27,13 +29,27 @@
 
 #include <lmcons.h>
 
-#include "Json2Settings.h"
+#include <boost/algorithm/searching/knuth_morris_pratt.hpp>
+#include <robin_hood.h>
+
+#ifndef NDEBUG
+#include <spdlog/sinks/msvc_sink.h>
+#else
+#include <spdlog/sinks/basic_file_sink.h>
+#endif
 
 #define DLLEXPORT __declspec(dllexport)
 
+using namespace std::literals;
+using SKSE::util::to_underlying;
+using SKSE::util::unrestricted_cast;
+
+namespace logger = SKSE::log;
+
 namespace stl
 {
-	using RE::stl::span;
+	using SKSE::stl::enumeration;
+	using SKSE::stl::span;
 }
 
 class StopWatch
@@ -48,7 +64,7 @@ public:
 	{
 		const auto end = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> diff = end - _start;
-		_MESSAGE("Milestone: %gs", diff.count());
+		logger::info(FMT_STRING("Milestone: {}s"), diff.count());
 	}
 
 private:
@@ -60,57 +76,4 @@ private:
 	return a_str ? a_str : "";
 }
 
-// https://en.wikipedia.org/wiki/Knuth-Morris-Pratt_algorithm
-inline void kmp_table(const stl::span<const char>& W, std::vector<std::size_t>& T)
-{
-	constexpr auto NPOS = static_cast<std::size_t>(-1);
-
-	std::size_t pos = 1;
-	std::size_t cnd = 0;
-
-	T[0] = NPOS;
-
-	while (pos < W.size()) {
-		if (W[pos] == W[cnd]) {
-			T[pos] = T[cnd];
-		} else {
-			T[pos] = cnd;
-			cnd = T[cnd];
-			while (cnd != NPOS && W[pos] != W[cnd]) {
-				cnd = T[cnd];
-			}
-		}
-		++pos;
-		++cnd;
-	}
-
-	T[pos] = cnd;
-}
-
-inline bool kmp_search(const stl::span<const char>& S, const stl::span<const char>& W)
-{
-	constexpr auto NPOS = static_cast<std::size_t>(-1);
-
-	std::size_t j = 0;
-	std::size_t k = 0;
-	std::vector<std::size_t> T(W.size() + 1);
-	kmp_table(W, T);
-
-	while (j < S.size()) {
-		if (W[k] == S[j]) {
-			++j;
-			++k;
-			if (k == W.size()) {
-				return true;
-			}
-		} else {
-			k = T[k];
-			if (k == NPOS) {
-				++j;
-				++k;
-			}
-		}
-	}
-
-	return false;
-}
+#include "Settings.h"

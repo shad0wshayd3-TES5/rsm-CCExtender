@@ -13,6 +13,6 @@ namespace Commands
 		Clear::Register();
 		Help::Register();
 		SetPerkPoints::Register();
-		_MESSAGE("Registered all console commands");
+		logger::info(FMT_STRING("Registered all console commands"));
 	}
 }

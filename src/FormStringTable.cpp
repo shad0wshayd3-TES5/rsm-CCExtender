@@ -12,7 +12,6 @@ std::string_view FormStringTable::MapFormTypeToString(RE::FormType a_formType)
 	if (it != _formTypeToStringMap.end()) {
 		return it->second;
 	} else {
-		assert(false);
 		return "EROR";
 	}
 }
@@ -25,7 +24,7 @@ RE::FormType FormStringTable::MapStringToFormType(const std::string_view& a_stri
 
 	std::string str;
 	str.reserve(4);
-	for (auto ch : a_string) {
+	for (const auto ch : a_string) {
 		str.push_back(static_cast<char>(std::toupper(ch)));
 	}
 
@@ -33,9 +32,7 @@ RE::FormType FormStringTable::MapStringToFormType(const std::string_view& a_stri
 	return it != _stringToFormTypeMap.end() ? it->second : RE::FormType::None;
 }
 
-FormStringTable::FormStringTable() :
-	_formTypeToStringMap(),
-	_stringToFormTypeMap()
+FormStringTable::FormStringTable()
 {
 	Insert(RE::FormType::None, "NONE");
 	Insert(RE::FormType::PluginInfo, "TES4");
@@ -176,21 +173,25 @@ FormStringTable::FormStringTable() :
 	Insert(RE::FormType::LensSprite, "LSPR");
 	Insert(RE::FormType::VolumetricLighting, "VOLI");
 
+#ifndef NDEBUG
 	if (_formTypeToStringMap.size() != to_underlying(RE::FormType::Max)) {
-		for (auto type = RE::FormType::None; type < RE::FormType::Max; ++type) {
-			if (_formTypeToStringMap.find(type) == _formTypeToStringMap.end()) {
-				_FATALERROR("Failed to insert %02X", to_underlying(type));
+		for (stl::enumeration type = RE::FormType::None; type < RE::FormType::Max; ++type) {
+			if (_formTypeToStringMap.find(*type) == _formTypeToStringMap.end()) {
+				logger::critical(FMT_STRING("Failed to insert {:02X}"), type.underlying());
 			}
 		}
 		assert(false);
 	}
+#endif
 }
 
-void FormStringTable::Insert(RE::FormType a_formType, const char* a_string)
+void FormStringTable::Insert(RE::FormType a_formType, std::string_view a_string)
 {
-	auto formTypeToStringResult = _formTypeToStringMap.insert(std::make_pair(a_formType, a_string));
+	[[maybe_unused]] const auto formTypeToStringResult =
+		_formTypeToStringMap.emplace(a_formType, a_string);
 	assert(formTypeToStringResult.second);
 
-	auto stringToFormTypeResult = _stringToFormTypeMap.insert(std::make_pair(a_string, a_formType));
+	[[maybe_unused]] const auto stringToFormTypeResult =
+		_stringToFormTypeMap.emplace(a_string, a_formType);
 	assert(stringToFormTypeResult.second);
 }

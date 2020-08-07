@@ -1,6 +1,6 @@
 #include "Clear.h"
 
-bool Clear::Exec(const RE::SCRIPT_PARAMETER*, RE::SCRIPT_FUNCTION::ScriptData*, RE::TESObjectREFR*, RE::TESObjectREFR*, RE::Script*, RE::ScriptLocals*, double&, UInt32&)
+bool Clear::Exec(const RE::SCRIPT_PARAMETER*, RE::SCRIPT_FUNCTION::ScriptData*, RE::TESObjectREFR*, RE::TESObjectREFR*, RE::Script*, RE::ScriptLocals*, double&, std::uint32_t&)
 {
 	auto task = SKSE::GetTaskInterface();
 	task->AddUITask([]() {
@@ -8,7 +8,7 @@ bool Clear::Exec(const RE::SCRIPT_PARAMETER*, RE::SCRIPT_FUNCTION::ScriptData*, 
 		auto console = ui ? ui->GetMenu<RE::Console>() : nullptr;
 		auto view = console ? console->uiMovie : nullptr;
 		if (view) {
-			view->Invoke("Console.ClearHistory", 0, 0, 0);
+			view->Invoke("Console.ClearHistory", nullptr, nullptr, 0);
 		}
 	});
 
@@ -23,22 +23,24 @@ void Clear::Register()
 		info->shortName = SHORT_NAME;
 		info->helpString = HelpStr();
 		info->referenceFunction = false;
-		info->params = 0;
+		info->params = nullptr;
 		info->numParams = 0;
 		info->executeFunction = &Exec;
-		info->conditionFunction = 0;
+		info->conditionFunction = nullptr;
 
-		_MESSAGE("Registered console command: %s (%s)", LONG_NAME, SHORT_NAME);
+		logger::info(FMT_STRING("Registered console command: {} ({})"), LONG_NAME, SHORT_NAME);
 	} else {
-		_ERROR("Failed to register console command: %s (%s)!\n", LONG_NAME, SHORT_NAME);
+		logger::error(FMT_STRING("Failed to register console command: {} ({})"), LONG_NAME, SHORT_NAME);
 	}
 }
 
 const char* Clear::HelpStr()
 {
-	static std::string help;
-	if (help.empty()) {
-		help += "\"Clear\"";
-	}
+	static const std::string help = []() {
+		std::string str;
+		str += "\"Clear\"";
+		return str;
+	}();
+
 	return help.c_str();
 }

@@ -1,13 +1,13 @@
 #include "SetPerkPoints.h"
 
-bool SetPerkPoints::Exec(const RE::SCRIPT_PARAMETER*, RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, RE::TESObjectREFR*, RE::TESObjectREFR*, RE::Script*, RE::ScriptLocals*, double&, UInt32&)
+bool SetPerkPoints::Exec(const RE::SCRIPT_PARAMETER*, RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, RE::TESObjectREFR*, RE::TESObjectREFR*, RE::Script*, RE::ScriptLocals*, double&, std::uint32_t&)
 {
 	auto num = a_scriptData->GetIntegerChunk()->GetInteger();
 	if (num < 0) {
 		CPrint("> [%s] ERROR: Cannot set perk points to a negative number (%i)", LONG_NAME, num);
 		return true;
-	} else if (num > std::numeric_limits<SInt8>::max()) {
-		CPrint("> [%s] ERROR: Cannot set perk points greater than %i (%i)", LONG_NAME, std::numeric_limits<SInt8>::max(), num);
+	} else if (num > std::numeric_limits<std::int8_t>::max()) {
+		CPrint("> [%s] ERROR: Cannot set perk points greater than %i (%i)", LONG_NAME, std::numeric_limits<std::int8_t>::max(), num);
 		return true;
 	}
 
@@ -17,7 +17,7 @@ bool SetPerkPoints::Exec(const RE::SCRIPT_PARAMETER*, RE::SCRIPT_FUNCTION::Scrip
 		return true;
 	}
 
-	player->perkCount = static_cast<SInt8>(num);
+	player->perkCount = static_cast<std::int8_t>(num);
 	CPrint("> [%s] Player now has %i perk points", LONG_NAME, num);
 
 	return true;
@@ -38,23 +38,25 @@ void SetPerkPoints::Register()
 		info->helpString = HelpStr();
 		info->referenceFunction = false;
 		info->SetParameters(params);
-		info->executeFunction = &Exec;
-		info->conditionFunction = 0;
+		info->executeFunction = Exec;
+		info->conditionFunction = nullptr;
 
-		_MESSAGE("Registered console command: %s (%s)", LONG_NAME, SHORT_NAME);
+		logger::info(FMT_STRING("Registered console command: {} ({})"), LONG_NAME, SHORT_NAME);
 	} else {
-		_ERROR("Failed to register console command!\n");
+		logger::error(FMT_STRING("Failed to register console command: {} ({})"), LONG_NAME, SHORT_NAME);
 	}
 }
 
 const char* SetPerkPoints::HelpStr()
 {
-	static std::string help;
-	if (help.empty()) {
-		help += "<setperkpoints> \" \" <numperkpoints>";
-		help += "\n\t<setperkpoints> ::= \"SetPerkPoints\" | \"SPP\"";
-		help += "\n\t<numperkpoints> ::= <integer> ; The number of perk points";
-	}
+	static const std::string help = []() {
+		std::string str;
+		str += "<setperkpoints> \" \" <numperkpoints>";
+		str += "\n\t<setperkpoints> ::= \"SetPerkPoints\" | \"SPP\"";
+		str += "\n\t<numperkpoints> ::= <integer> ; The number of perk points";
+		return str;
+	}();
+
 	return help.c_str();
 }
 

@@ -14,26 +14,47 @@ void MessageHandler(SKSE::MessagingInterface::Message* a_msg)
 
 extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Query(const SKSE::QueryInterface* a_skse, SKSE::PluginInfo* a_info)
 {
-	SKSE::Logger::OpenRelative(FOLDERID_Documents, L"\\My Games\\Skyrim Special Edition\\SKSE\\CCExtender.log");
-	SKSE::Logger::SetPrintLevel(SKSE::Logger::Level::kDebugMessage);
-	SKSE::Logger::SetFlushLevel(SKSE::Logger::Level::kDebugMessage);
-	SKSE::Logger::UseLogStamp(true);
-	SKSE::Logger::TrackTrampolineStats(true);
+	try {
+#ifndef NDEBUG
+		auto sink = std::make_shared<spdlog::sinks::msvc_sink_mt>();
+#else
+		auto path = logger::log_directory() / "CCExtender.log"sv;
+		auto sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(path.string(), true);
+#endif
 
-	_MESSAGE("CCExtender v%s", CEXT_VERSION_VERSTRING);
+		auto log = std::make_shared<spdlog::logger>("global log"s, std::move(sink));
 
-	a_info->infoVersion = SKSE::PluginInfo::kVersion;
-	a_info->name = "CCExtender";
-	a_info->version = CEXT_VERSION_MAJOR;
+#ifndef NDEBUG
+		log->set_level(spdlog::level::trace);
+#else
+		log->set_level(spdlog::level::info);
+		log->flush_on(spdlog::level::warn);
+#endif
 
-	if (a_skse->IsEditor()) {
-		_FATALERROR("Loaded in editor, marking as incompatible!\n");
+		spdlog::set_default_logger(std::move(log));
+		spdlog::set_pattern("%g(%#): [%^%l%$] %v"s);
+
+		logger::info(FMT_STRING("CCExtender v{}"), CEXT_VERSION_VERSTRING);
+
+		a_info->infoVersion = SKSE::PluginInfo::kVersion;
+		a_info->name = "CCExtender";
+		a_info->version = CEXT_VERSION_MAJOR;
+
+		if (a_skse->IsEditor()) {
+			logger::critical(FMT_STRING("Loaded in editor, marking as incompatible"));
+			return false;
+		}
+
+		const auto ver = a_skse->RuntimeVersion();
+		if (ver < SKSE::RUNTIME_1_5_39) {
+			logger::critical(FMT_STRING("Unsupported runtime version {}"), ver.string());
+			return false;
+		}
+	} catch (const std::exception& e) {
+		logger::critical(e.what());
 		return false;
-	}
-
-	auto ver = a_skse->RuntimeVersion();
-	if (ver < SKSE::RUNTIME_1_5_39) {
-		_FATALERROR("Unsupported runtime version %s!", ver.GetString().c_str());
+	} catch (...) {
+		logger::critical(FMT_STRING("caught unknown exception"));
 		return false;
 	}
 
@@ -42,26 +63,34 @@ extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Query(const SKSE::QueryInterface* a
 
 extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface* a_skse)
 {
-	_MESSAGE("CCExtender loaded");
+	try {
+		logger::info(FMT_STRING("CCExtender loaded"));
 
-	if (!SKSE::Init(a_skse)) {
+		if (!SKSE::Init(a_skse)) {
+			return false;
+		}
+
+		if (!Settings::LoadSettings()) {
+			return false;
+		}
+
+		if (!SKSE::AllocTrampoline(1 << 4)) {
+			return false;
+		}
+
+		auto messaging = SKSE::GetMessagingInterface();
+		if (!messaging->RegisterListener("SKSE", MessageHandler)) {
+			return false;
+		}
+
+		Hooks::Install();
+	} catch (const std::exception& e) {
+		logger::critical(e.what());
+		return false;
+	} catch (...) {
+		logger::critical(FMT_STRING("caught unknown exception"));
 		return false;
 	}
-
-	if (!Settings::LoadSettings()) {
-		return false;
-	}
-
-	if (!SKSE::AllocTrampoline(1 << 4)) {
-		return false;
-	}
-
-	auto messaging = SKSE::GetMessagingInterface();
-	if (!messaging->RegisterListener("SKSE", MessageHandler)) {
-		return false;
-	}
-
-	Hooks::Install();
 
 	return true;
 }

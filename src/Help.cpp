@@ -3,7 +3,7 @@
 #include "EditorIDCache.h"
 #include "FormStringTable.h"
 
-bool Help::Exec(const RE::SCRIPT_PARAMETER*, RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, RE::TESObjectREFR*, RE::TESObjectREFR*, RE::Script*, RE::ScriptLocals*, double&, UInt32&)
+bool Help::Exec(const RE::SCRIPT_PARAMETER*, RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, RE::TESObjectREFR*, RE::TESObjectREFR*, RE::Script*, RE::ScriptLocals*, double&, std::uint32_t&)
 {
 	MatchString matchString;
 	Filter filter;
@@ -64,12 +64,12 @@ void Help::Register()
 		info->helpString = HelpStr();
 		info->referenceFunction = false;
 		info->SetParameters(params);
-		info->executeFunction = &Exec;
-		info->conditionFunction = 0;
+		info->executeFunction = Exec;
+		info->conditionFunction = nullptr;
 
-		_MESSAGE("Registered console command: %s (%s)", LONG_NAME, SHORT_NAME);
+		logger::info(FMT_STRING("Registered console command: {} ({})"), LONG_NAME, SHORT_NAME);
 	} else {
-		_ERROR("Failed to register console command: %s (%s)!\n", LONG_NAME, SHORT_NAME);
+		logger::error(FMT_STRING("Failed to register console command: {} ({})"), LONG_NAME, SHORT_NAME);
 	}
 }
 
@@ -78,7 +78,7 @@ Help::FormInfo::FormInfo(RE::TESForm* a_form) :
 	_editorID(""),
 	_fullName(""),
 	_formID(a_form->formID),
-	_formType(a_form->formType)
+	_formType(a_form->GetFormType())
 {
 	assert(a_form != nullptr);
 
@@ -198,27 +198,27 @@ void Help::CPrint(const char* a_fmt, ...)
 
 void Help::ParseParams(RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, MatchString& a_matchString, Filter& a_filter, FormType& a_formType)
 {
-	RE::SCRIPT_FUNCTION::StringChunk* strChunk = 0;
-	RE::SCRIPT_FUNCTION::IntegerChunk* intChunk = 0;
+	RE::SCRIPT_FUNCTION::StringChunk* strChunk = nullptr;
+	RE::SCRIPT_FUNCTION::IntegerChunk* intChunk = nullptr;
 
 	if (a_scriptData->numParams < 1) {
 		return;
 	}
 
 	strChunk = a_scriptData->GetStringChunk();
-	a_matchString = std::make_optional(strChunk->GetString());
+	a_matchString = strChunk->GetString();
 	if (a_scriptData->numParams < 2) {
 		return;
 	}
 
 	intChunk = strChunk->GetNext()->AsInteger();
-	a_filter = std::make_optional(static_cast<FilterType>(intChunk->GetInteger()));
+	a_filter = static_cast<FilterType>(intChunk->GetInteger());
 	if (a_scriptData->numParams < 3) {
 		return;
 	}
 
 	strChunk = intChunk->GetNext()->AsString();
-	a_formType = std::make_optional(strChunk->GetString());
+	a_formType = strChunk->GetString();
 }
 
 bool Help::Match(const std::string_view& a_haystack)
@@ -232,14 +232,20 @@ bool Help::Match(const std::string_view& a_haystack)
 		ch = static_cast<char>(std::tolower(ch));
 	}
 
-	return kmp_search({ haystack.c_str(), haystack.size() }, { _needle.c_str(), _needle.size() });
+	const auto [first, last] =
+		boost::algorithm::knuth_morris_pratt_search(
+			haystack.begin(),
+			haystack.end(),
+			_needle.begin(),
+			_needle.end());
+	return first != last;
 }
 
 std::string_view Help::GetFullName(RE::TESForm* a_form)
 {
-	std::string_view result("");
+	std::string_view result;
 
-	switch (a_form->formType) {
+	switch (*a_form->formType) {
 	case RE::FormType::Dialogue:
 		break;
 	default:

@@ -1,12 +1,10 @@
 #include "SelectedRefColor.h"
 
-#include "Settings.h"
-
 void SelectedRefColor::InstallHooks()
 {
-	REL::Offset<std::uintptr_t> vtbl = REL::ID(268119);	 // Console vtbl
+	REL::Relocation<std::uintptr_t> vtbl{ REL::ID(268119) };  // Console vtbl
 	_processMessage = vtbl.write_vfunc(0x4, ProcessMessage);
-	_MESSAGE("Installed hooks for %s", typeid(SelectedRefColor).name());
+	logger::info(FMT_STRING("Installed hooks for {}"), typeid(SelectedRefColor).name());
 }
 
 auto SelectedRefColor::ProcessMessage(RE::IMenu* a_menu, RE::UIMessage& a_message)
@@ -14,11 +12,11 @@ auto SelectedRefColor::ProcessMessage(RE::IMenu* a_menu, RE::UIMessage& a_messag
 {
 	using MessageType = RE::UI_MESSAGE_TYPE;
 
-	switch (a_message.type) {
+	switch (*a_message.type) {
 	case MessageType::kUpdate:
 	case MessageType::kScaleformEvent:
 		if (a_menu->OnStack()) {
-			auto result = _processMessage(a_menu, a_message);
+			const auto result = _processMessage(a_menu, a_message);
 			if (_cachedRef != RE::Console::GetSelectedRef()) {
 				ClearColor();
 				UpdateRef();
@@ -48,7 +46,7 @@ void SelectedRefColor::ClearColor()
 	task->AddTask([ref]() {
 		auto obj3D = ref ? ref->Get3D() : nullptr;
 		if (obj3D) {
-			RE::NiColorA color(0.0, 0.0, 0.0, 0.0);
+			RE::NiColorA color{ 0.0F, 0.0F, 0.0F, 0.0F };
 			obj3D->TintScenegraph(color);
 		}
 	});

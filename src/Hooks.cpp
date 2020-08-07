@@ -11,6 +11,6 @@ namespace Hooks
 		CommandPipe::InstallHooks();
 		EditorIDCache::InstallHooks();
 		SelectedRefColor::InstallHooks();
-		_MESSAGE("Installed all hooks");
+		logger::info(FMT_STRING("Installed all hooks"));
 	}
 }

@@ -1,8 +1,6 @@
 #include "BetaComment.h"
 
-#include "Settings.h"
-
-bool BetaComment::Exec(const RE::SCRIPT_PARAMETER*, RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, RE::TESObjectREFR*, RE::TESObjectREFR*, RE::Script*, RE::ScriptLocals*, double&, UInt32&)
+bool BetaComment::Exec(const RE::SCRIPT_PARAMETER*, RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, RE::TESObjectREFR*, RE::TESObjectREFR*, RE::Script*, RE::ScriptLocals*, double&, std::uint32_t&)
 {
 	if (!_file.is_open()) {
 		CPrint("> [%s] ERROR: Failed to open output file", LONG_NAME);
@@ -41,14 +39,14 @@ void BetaComment::Register()
 		info->helpString = HelpStr();
 		info->referenceFunction = false;
 		info->SetParameters(params);
-		info->executeFunction = &Exec;
-		info->conditionFunction = 0;
+		info->executeFunction = Exec;
+		info->conditionFunction = nullptr;
 		info->editorFilter = false;
 		info->invalidatesCellList = false;
 
-		_MESSAGE("Registered console command: %s (%s)", LONG_NAME, SHORT_NAME);
+		logger::info(FMT_STRING("Registered console command: {} ({})"), LONG_NAME, SHORT_NAME);
 	} else {
-		_ERROR("Failed to register console command: %s (%s)!\n", LONG_NAME, SHORT_NAME);
+		logger::error(FMT_STRING("Failed to register console command: {} ({})"), LONG_NAME, SHORT_NAME);
 	}
 }
 
@@ -65,12 +63,14 @@ void BetaComment::CPrint(const char* a_fmt, ...)
 
 const char* BetaComment::HelpStr()
 {
-	static std::string help;
-	if (help.empty()) {
-		help += "<betacomment> \" \" <comment>";
-		help += "\n\t<betacomment> ::= \"BetaComment\" | \"BC\"";
-		help += "\n\t<comment> ::= <string> ; The comment string";
-	}
+	static const std::string help = []() {
+		std::string str;
+		str += "<betacomment> \" \" <comment>";
+		str += "\n\t<betacomment> ::= \"BetaComment\" | \"BC\"";
+		str += "\n\t<comment> ::= <string> ; The comment string";
+		return str;
+	}();
+
 	return help.c_str();
 }
 
@@ -81,8 +81,8 @@ void BetaComment::Init()
 	_file.open(*Settings::betaCommentFileName);
 
 	DWORD tmpSize = USERNAME_SIZE;
-	if (!GetUserName(_userName, &tmpSize)) {
-		_ERROR("Failed to get username with error code (%i)", GetLastError());
+	if (!GetUserNameA(_userName, &tmpSize)) {
+		logger::error(FMT_STRING("Failed to get username with error code ({})"), GetLastError());
 		strcpy_s(_userName, USERNAME_SIZE, "SEE-LOG-FOR-ERROR");
 	}
 }
@@ -176,7 +176,7 @@ bool BetaComment::PrintCellEditorID(Buffer& a_buf)
 		return false;
 	}
 
-	std::string editorID{ safe_string(cell->GetFormEditorID()) };
+	std::string editorID(safe_string(cell->GetFormEditorID()));
 	if (editorID.empty()) {
 		return false;
 	}
@@ -235,7 +235,7 @@ bool BetaComment::PrintSourceFile(Buffer& a_buf)
 
 bool BetaComment::PrintTime(Buffer& a_buf)
 {
-	auto time = std::time(0);
+	auto time = std::time(nullptr);
 	std::tm localTime;
 	auto err = gmtime_s(&localTime, &time);
 	if (err) {

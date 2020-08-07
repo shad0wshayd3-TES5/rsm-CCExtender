@@ -3,7 +3,7 @@
 class Help
 {
 public:
-	static bool Exec(const RE::SCRIPT_PARAMETER* a_paramInfo, RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, RE::TESObjectREFR* a_thisObj, RE::TESObjectREFR* a_containingObj, RE::Script* a_scriptObj, RE::ScriptLocals* a_locals, double& a_result, UInt32& a_opcodeOffsetPtr);
+	static bool Exec(const RE::SCRIPT_PARAMETER* a_paramInfo, RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, RE::TESObjectREFR* a_thisObj, RE::TESObjectREFR* a_containingObj, RE::Script* a_scriptObj, RE::ScriptLocals* a_locals, double& a_result, std::uint32_t& a_opcodeOffsetPtr);
 	static void Register();
 
 private:
@@ -55,7 +55,7 @@ private:
 		std::string _name;
 	};
 
-	enum class FilterType : SInt32
+	enum class FilterType : std::int32_t
 	{
 		kAll = 0,
 		kFunctions = 1,

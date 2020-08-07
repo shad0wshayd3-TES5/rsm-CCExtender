@@ -87,16 +87,16 @@
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <VcpkgUserTriplet>$(VcpkgPlatformTarget)-$(VcpkgOSTarget)-custom</VcpkgUserTriplet>
+    <VcpkgTriplet>$(VcpkgUserTriplet)-custom</VcpkgTriplet>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <VcpkgUserTriplet>$(VcpkgPlatformTarget)-$(VcpkgOSTarget)-custom</VcpkgUserTriplet>
+    <VcpkgTriplet>$(VcpkgUserTriplet)-custom</VcpkgTriplet>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <VcpkgUserTriplet>$(VcpkgPlatformTarget)-$(VcpkgOSTarget)-custom</VcpkgUserTriplet>
+    <VcpkgTriplet>$(VcpkgUserTriplet)-custom</VcpkgTriplet>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <VcpkgUserTriplet>$(VcpkgPlatformTarget)-$(VcpkgOSTarget)-custom</VcpkgUserTriplet>
+    <VcpkgTriplet>$(VcpkgUserTriplet)-custom</VcpkgTriplet>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -118,9 +118,12 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalOptions>/NATVIS:$(VcpkgCurrentInstalledDir)$(VcpkgConfigSubdir)\share\nlohmann_json\nlohmann_json.natvis %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(TargetPath)" "$(Skyrim64Path)\Data\SKSE\Plugins\$(TargetFileName)" /Y</Command>
+      <Command>copy "$(TargetPath)" "$(Skyrim64Path)\Data\SKSE\Plugins\$(TargetFileName)" /Y
+copy "$(ProjectDir)$(TargetName).json" "$(Skyrim64Path)\Data\SKSE\Plugins\$(TargetName).json" /Y
+copy "$(TargetDir)$(TargetName).pdb" "$(Skyrim64Path)\Data\SKSE\Plugins\$(TargetName).pdb" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -145,10 +148,13 @@
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <AdditionalOptions>/NATVIS:$(VcpkgCurrentInstalledDir)$(VcpkgConfigSubdir)\share\nlohmann_json\nlohmann_json.natvis %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(TargetPath)" "$(Skyrim64Path)\Data\SKSE\Plugins\$(TargetFileName)" /Y</Command>
+      <Command>copy "$(TargetPath)" "$(Skyrim64Path)\Data\SKSE\Plugins\$(TargetFileName)" /Y
+copy "$(ProjectDir)$(TargetName).json" "$(Skyrim64Path)\Data\SKSE\Plugins\$(TargetName).json" /Y
+copy "$(TargetDir)$(TargetName).pdb" "$(Skyrim64Path)\Data\SKSE\Plugins\$(TargetName).pdb" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -171,9 +177,12 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalOptions>/NATVIS:$(VcpkgCurrentInstalledDir)$(VcpkgConfigSubdir)\share\nlohmann_json\nlohmann_json.natvis %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(TargetPath)" "$(Skyrim64Path)\Data\SKSE\Plugins\$(TargetFileName)" /Y</Command>
+      <Command>copy "$(TargetPath)" "$(Skyrim64Path)\Data\SKSE\Plugins\$(TargetFileName)" /Y
+copy "$(ProjectDir)$(TargetName).json" "$(Skyrim64Path)\Data\SKSE\Plugins\$(TargetName).json" /Y
+copy "$(TargetDir)$(TargetName).pdb" "$(Skyrim64Path)\Data\SKSE\Plugins\$(TargetName).pdb" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -198,10 +207,13 @@
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <AdditionalOptions>/NATVIS:$(VcpkgCurrentInstalledDir)$(VcpkgConfigSubdir)\share\nlohmann_json\nlohmann_json.natvis %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(TargetPath)" "$(Skyrim64Path)\Data\SKSE\Plugins\$(TargetFileName)" /Y</Command>
+      <Command>copy "$(TargetPath)" "$(Skyrim64Path)\Data\SKSE\Plugins\$(TargetFileName)" /Y
+copy "$(ProjectDir)$(TargetName).json" "$(Skyrim64Path)\Data\SKSE\Plugins\$(TargetName).json" /Y
+copy "$(TargetDir)$(TargetName).pdb" "$(Skyrim64Path)\Data\SKSE\Plugins\$(TargetName).pdb" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -226,7 +238,6 @@
     </ClCompile>
     <ClCompile Include="src\SelectedRefColor.cpp" />
     <ClCompile Include="src\SetPerkPoints.cpp" />
-    <ClCompile Include="src\Settings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BetaComment.h" />

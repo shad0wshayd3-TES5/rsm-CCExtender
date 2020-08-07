@@ -17,8 +17,8 @@ private:
 	FormStringTable& operator=(const FormStringTable&) = delete;
 	FormStringTable& operator=(FormStringTable&&) = delete;
 
-	void Insert(RE::FormType a_formType, const char* a_string);
+	void Insert(RE::FormType a_formType, std::string_view a_string);
 
-	std::unordered_map<RE::FormType, std::string_view> _formTypeToStringMap;
-	std::unordered_map<std::string_view, RE::FormType> _stringToFormTypeMap;
+	robin_hood::unordered_flat_map<RE::FormType, std::string_view> _formTypeToStringMap;
+	robin_hood::unordered_flat_map<std::string_view, RE::FormType> _stringToFormTypeMap;
 };

@@ -2,11 +2,11 @@
 
 void CommandPipe::InstallHooks()
 {
-	REL::Offset<std::uintptr_t> hookPoint{ REL::ID(52065), 0xE2 };
-	auto trampoline = SKSE::GetTrampoline();
-	_CompileAndRun = trampoline->Write5CallEx(hookPoint.address(), CompileAndRun);
+	REL::Relocation<std::uintptr_t> hookPoint{ REL::ID(52065), 0xE2 };
+	auto& trampoline = SKSE::GetTrampoline();
+	_CompileAndRun = trampoline.write_call<5>(hookPoint.address(), CompileAndRun);
 
-	_MESSAGE("Installed hooks for class (%s)", typeid(CommandPipe).name());
+	logger::info(FMT_STRING("Installed hooks for class ({})"), typeid(CommandPipe).name());
 }
 
 void CommandPipe::CompileAndRun(RE::Script* a_script, RE::ScriptCompiler* a_compiler, RE::COMPILER_NAME a_name, RE::TESObjectREFR* a_targetRef)
@@ -33,9 +33,9 @@ void CommandPipe::CompileAndRun(RE::Script* a_script, RE::ScriptCompiler* a_comp
 
 void CommandPipe::CPrint(const char* a_string)
 {
-	std::string str((a_string ? a_string : ""));
+	std::string str(safe_string(a_string));
 	auto task = SKSE::GetTaskInterface();
-	task->AddTask([str]() {
+	task->AddTask([=]() {
 		auto console = RE::ConsoleLog::GetSingleton();
 		if (console) {
 			console->Print(str.c_str());
