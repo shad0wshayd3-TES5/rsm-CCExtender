@@ -1,3 +1,7 @@
+#include "Hooks/Hooks.h"
+#include "ObScript/ObScript.h"
+#include "Settings.h"
+
 #ifdef SKYRIM_AE
 extern "C" DLLEXPORT constinit auto SKSEPlugin_Version = []()
 {
@@ -44,7 +48,7 @@ namespace
 			stl::report_and_fail("Failed to find standard logging directory"sv);
 		}
 
-		*path /= fmt::format(FMT_STRING("{}.log"), Version::PROJECT);
+		*path /= fmt::format(FMT_STRING("{}.log"sv), Version::PROJECT);
 		auto sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(path->string(), true);
 
 		auto log = std::make_shared<spdlog::logger>("global log"s, std::move(sink));
@@ -55,37 +59,22 @@ namespace
 		spdlog::set_default_logger(std::move(log));
 		spdlog::set_pattern("[%^%l%$] %v"s);
 
-		logger::info(FMT_STRING("{:s} v{:s}"), Version::PROJECT, Version::NAME);
-	}
-
-	void MessageHandler(SKSE::MessagingInterface::Message* a_msg)
-	{
-		switch (a_msg->type)
-		{
-			case SKSE::MessagingInterface::kDataLoaded:
-				break;
-			default:
-				break;
-		}
+		logger::info(FMT_STRING("{:s} v{:s}"sv), Version::PROJECT, Version::NAME);
 	}
 }
 
 extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface* a_skse)
 {
 	InitializeLog();
-	logger::info(FMT_STRING("{:s} loaded"), Version::PROJECT);
+	logger::info(FMT_STRING("{:s} loaded"sv), Version::PROJECT);
 
 	SKSE::Init(a_skse);
 	SKSE::AllocTrampoline(1 << 4);
 
-	const auto messaging = SKSE::GetMessagingInterface();
-	if (!messaging || !messaging->RegisterListener(MessageHandler))
-	{
-		return false;
-	}
+	Settings::LoadSettings();
 
-	// loadsettings
-	// load hooks
+	Hooks::Install();
+	ObScript::Install();
 
 	return true;
 }

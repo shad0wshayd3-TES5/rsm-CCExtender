@@ -18,5 +18,5 @@ private:
 	static const char* HelpStr();
 
 	static constexpr char LONG_NAME[] = "Clear";
-	static constexpr char SHORT_NAME[] = "";
+	static constexpr char SHORT_NAME[] = "cls";
 };

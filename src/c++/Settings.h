@@ -29,7 +29,7 @@ public:
 	{
 		auto [log, success] = Json2Settings::load_settings(FILE_NAME, a_dumpParse);
 		if (!log.empty()) {
-			logger::error{ log };
+			logger::error{ fmt::runtime(log) };
 		}
 		return success;
 	}

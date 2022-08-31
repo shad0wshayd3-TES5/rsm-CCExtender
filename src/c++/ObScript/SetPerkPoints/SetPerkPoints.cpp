@@ -41,9 +41,9 @@ void SetPerkPoints::Register()
 		info->executeFunction = Exec;
 		info->conditionFunction = nullptr;
 
-		logger::info(FMT_STRING("Registered console command: {} ({})"), LONG_NAME, SHORT_NAME);
+		logger::info(FMT_STRING("Registered console command: {} ({})"sv), LONG_NAME, SHORT_NAME);
 	} else {
-		logger::error(FMT_STRING("Failed to register console command: {} ({})"), LONG_NAME, SHORT_NAME);
+		logger::error(FMT_STRING("Failed to register console command: {} ({})"sv), LONG_NAME, SHORT_NAME);
 	}
 }
 

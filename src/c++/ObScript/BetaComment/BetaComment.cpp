@@ -44,9 +44,9 @@ void BetaComment::Register()
 		info->editorFilter = false;
 		info->invalidatesCellList = false;
 
-		logger::info(FMT_STRING("Registered console command: {} ({})"), LONG_NAME, SHORT_NAME);
+		logger::info(FMT_STRING("Registered console command: {} ({})"sv), LONG_NAME, SHORT_NAME);
 	} else {
-		logger::error(FMT_STRING("Failed to register console command: {} ({})"), LONG_NAME, SHORT_NAME);
+		logger::error(FMT_STRING("Failed to register console command: {} ({})"sv), LONG_NAME, SHORT_NAME);
 	}
 }
 
@@ -82,7 +82,7 @@ void BetaComment::Init()
 
 	DWORD tmpSize = USERNAME_SIZE;
 	if (!GetUserNameA(_userName, &tmpSize)) {
-		logger::error(FMT_STRING("Failed to get username with error code ({})"), GetLastError());
+		logger::error(FMT_STRING("Failed to get username with error code ({})"sv), GetLastError());
 		strcpy_s(_userName, USERNAME_SIZE, "SEE-LOG-FOR-ERROR");
 	}
 }
@@ -176,7 +176,7 @@ bool BetaComment::PrintCellEditorID(Buffer& a_buf)
 		return false;
 	}
 
-	std::string editorID(safe_string(cell->GetFormEditorID()));
+	std::string editorID(stl::safe_string(cell->GetFormEditorID()));
 	if (editorID.empty()) {
 		return false;
 	}
@@ -203,7 +203,7 @@ bool BetaComment::PrintRefCoordinates(Buffer& a_buf)
 
 bool BetaComment::PrintRefEditorID(Buffer& a_buf)
 {
-	std::string editorID{ safe_string(_ref->GetFormEditorID()) };
+	std::string editorID{ stl::safe_string(_ref->GetFormEditorID()) };
 	if (editorID.empty()) {
 		return false;
 	}
