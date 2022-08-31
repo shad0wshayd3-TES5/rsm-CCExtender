@@ -22,6 +22,6 @@ private:
 	static void SetColor();
 	static void UpdateRef();
 
-	static inline REL::Relocation<decltype(&RE::IMenu::ProcessMessage)> _processMessage{};
-	static inline RE::TESObjectREFRPtr _cachedRef{};
+	inline static REL::Relocation<decltype(&RE::IMenu::ProcessMessage)> _processMessage{};
+	inline static RE::TESObjectREFRPtr _cachedRef{};
 };

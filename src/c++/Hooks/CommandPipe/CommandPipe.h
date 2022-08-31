@@ -20,6 +20,6 @@ private:
 	static void CPrint(const char* a_string);
 	static bool Parse(std::string& a_command, std::optional<std::string>& a_fileName);
 
-	static inline std::ofstream _outFile;
-	static inline REL::Relocation<decltype(CompileAndRun)> _CompileAndRun;
+	inline static std::ofstream _outFile;
+	inline static REL::Relocation<decltype(CompileAndRun)> _CompileAndRun;
 };

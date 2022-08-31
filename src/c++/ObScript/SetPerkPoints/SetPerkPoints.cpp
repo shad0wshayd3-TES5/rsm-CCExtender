@@ -3,16 +3,20 @@
 bool SetPerkPoints::Exec(const RE::SCRIPT_PARAMETER*, RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, RE::TESObjectREFR*, RE::TESObjectREFR*, RE::Script*, RE::ScriptLocals*, double&, std::uint32_t&)
 {
 	auto num = a_scriptData->GetIntegerChunk()->GetInteger();
-	if (num < 0) {
+	if (num < 0)
+	{
 		CPrint("> [%s] ERROR: Cannot set perk points to a negative number (%i)", LONG_NAME, num);
 		return true;
-	} else if (num > std::numeric_limits<std::int8_t>::max()) {
+	}
+	else if (num > std::numeric_limits<std::int8_t>::max())
+	{
 		CPrint("> [%s] ERROR: Cannot set perk points greater than %i (%i)", LONG_NAME, std::numeric_limits<std::int8_t>::max(), num);
 		return true;
 	}
 
 	auto player = RE::PlayerCharacter::GetSingleton();
-	if (!player) {
+	if (!player)
+	{
 		CPrint("> [%s] ERROR: Player is NONE", LONG_NAME);
 		return true;
 	}
@@ -28,7 +32,8 @@ void SetPerkPoints::Register()
 	using Type = RE::SCRIPT_PARAM_TYPE;
 
 	auto info = RE::SCRIPT_FUNCTION::LocateConsoleCommand("Timing");  // unused
-	if (info) {
+	if (info)
+	{
 		static RE::SCRIPT_PARAMETER params[] = {
 			{ "Integer", Type::kInt, 1 }
 		};
@@ -42,14 +47,17 @@ void SetPerkPoints::Register()
 		info->conditionFunction = nullptr;
 
 		logger::info(FMT_STRING("Registered console command: {} ({})"sv), LONG_NAME, SHORT_NAME);
-	} else {
+	}
+	else
+	{
 		logger::error(FMT_STRING("Failed to register console command: {} ({})"sv), LONG_NAME, SHORT_NAME);
 	}
 }
 
 const char* SetPerkPoints::HelpStr()
 {
-	static const std::string help = []() {
+	static const std::string help = []()
+	{
 		std::string str;
 		str += "<setperkpoints> \" \" <numperkpoints>";
 		str += "\n\t<setperkpoints> ::= \"SetPerkPoints\" | \"SPP\"";
@@ -63,7 +71,8 @@ const char* SetPerkPoints::HelpStr()
 void SetPerkPoints::CPrint(const char* a_fmt, ...)
 {
 	auto console = RE::ConsoleLog::GetSingleton();
-	if (console && console->IsConsoleMode()) {
+	if (console && console->IsConsoleMode())
+	{
 		std::va_list args;
 		va_start(args, a_fmt);
 		console->VPrint(a_fmt, args);

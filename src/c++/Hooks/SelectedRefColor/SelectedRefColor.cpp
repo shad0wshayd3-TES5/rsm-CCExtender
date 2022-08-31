@@ -12,28 +12,31 @@ auto SelectedRefColor::ProcessMessage(RE::IMenu* a_menu, RE::UIMessage& a_messag
 {
 	using MessageType = RE::UI_MESSAGE_TYPE;
 
-	switch (*a_message.type) {
-	case MessageType::kUpdate:
-	case MessageType::kScaleformEvent:
-		if (a_menu->OnStack()) {
-			const auto result = _processMessage(a_menu, a_message);
-			if (_cachedRef != RE::Console::GetSelectedRef()) {
-				ClearColor();
-				UpdateRef();
-				SetColor();
+	switch (*a_message.type)
+	{
+		case MessageType::kUpdate:
+		case MessageType::kScaleformEvent:
+			if (a_menu->OnStack())
+			{
+				const auto result = _processMessage(a_menu, a_message);
+				if (_cachedRef != RE::Console::GetSelectedRef())
+				{
+					ClearColor();
+					UpdateRef();
+					SetColor();
+				}
+				return result;
 			}
-			return result;
-		}
-		break;
-	case MessageType::kShow:
-		UpdateRef();
-		SetColor();
-		break;
-	case MessageType::kHide:
-		ClearColor();
-		break;
-	default:
-		break;
+			break;
+		case MessageType::kShow:
+			UpdateRef();
+			SetColor();
+			break;
+		case MessageType::kHide:
+			ClearColor();
+			break;
+		default:
+			break;
 	}
 
 	return _processMessage(a_menu, a_message);
@@ -43,25 +46,25 @@ void SelectedRefColor::ClearColor()
 {
 	auto task = SKSE::GetTaskInterface();
 	auto ref = _cachedRef;
-	task->AddTask([ref]() {
+	task->AddTask([ref]()
+	              {
 		auto obj3D = ref ? ref->Get3D() : nullptr;
 		if (obj3D) {
 			RE::NiColorA color{ 0.0F, 0.0F, 0.0F, 0.0F };
 			obj3D->TintScenegraph(color);
-		}
-	});
+		} });
 }
 
 void SelectedRefColor::SetColor()
 {
 	auto task = SKSE::GetTaskInterface();
 	auto ref = _cachedRef;
-	task->AddTask([ref]() {
+	task->AddTask([ref]()
+	              {
 		auto obj3D = ref ? ref->Get3D() : nullptr;
 		if (obj3D) {
 			obj3D->TintScenegraph(*Settings::consoleSelectedRefColor);
-		}
-	});
+		} });
 }
 
 void SelectedRefColor::UpdateRef()
