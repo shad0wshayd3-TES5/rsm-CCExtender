@@ -2,6 +2,7 @@
 
 bool BetaComment::Exec(const RE::SCRIPT_PARAMETER*, RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, RE::TESObjectREFR*, RE::TESObjectREFR*, RE::Script*, RE::ScriptLocals*, double&, std::uint32_t&)
 {
+	_file.open(*Settings::betaCommentFileName, std::ios_base::app);
 	if (!_file.is_open())
 	{
 		CPrint("> [%s] ERROR: Failed to open output file", LONG_NAME);
@@ -20,6 +21,7 @@ bool BetaComment::Exec(const RE::SCRIPT_PARAMETER*, RE::SCRIPT_FUNCTION::ScriptD
 	_ref = selectedRef.get();
 	LogComment(comment);
 	_ref = 0;
+	_file.close();
 
 	return true;
 }
@@ -96,8 +98,6 @@ const char* BetaComment::HelpStr()
 void BetaComment::Init()
 {
 	constexpr auto USERNAME_SIZE = std::extent<decltype(_userName)>::value;
-
-	_file.open(*Settings::betaCommentFileName);
 
 	DWORD tmpSize = USERNAME_SIZE;
 	if (!GetUserNameA(_userName, &tmpSize))
