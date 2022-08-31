@@ -36,13 +36,14 @@ void CommandPipe::CompileAndRun(RE::Script* a_script, RE::ScriptCompiler* a_comp
 
 void CommandPipe::CPrint(const char* a_string)
 {
-	std::string str(stl::safe_string(a_string));
+	std::string str{ stl::safe_string(a_string) };
 	auto task = SKSE::GetTaskInterface();
-	task->AddTask([=]()
-	              {
-		auto console = RE::ConsoleLog::GetSingleton();
-		if (console) {
-			console->Print(str.c_str());
+	task->AddTask(
+		[=]()
+		{
+			auto console = RE::ConsoleLog::GetSingleton();
+			if (console) {
+				console->Print(str.c_str());
 		} });
 }
 
@@ -82,6 +83,7 @@ bool CommandPipe::Parse(std::string& a_command, std::optional<std::string>& a_fi
 									++k;
 								}
 								while (k < a_command.length() && a_command[k] != '\"');
+
 								if (k >= a_command.length())
 								{
 									CPrint("ERROR: Expected '\"' before end of line");
@@ -96,6 +98,7 @@ bool CommandPipe::Parse(std::string& a_command, std::optional<std::string>& a_fi
 								}
 							}
 							break;
+
 						default:
 							if (std::isalnum(a_command[j]))
 							{
@@ -105,6 +108,7 @@ bool CommandPipe::Parse(std::string& a_command, std::optional<std::string>& a_fi
 									++k;
 								}
 								while (k < a_command.length() && std::isalnum(a_command[k]));
+
 								if (k < a_command.length())
 								{
 									CPrint("ERROR: Expected end of line");
@@ -124,9 +128,11 @@ bool CommandPipe::Parse(std::string& a_command, std::optional<std::string>& a_fi
 
 				CPrint("ERROR: Expected expression following pipe");
 				return false;
+
 			case ' ':
 				lastWasSpace = true;
 				break;
+
 			default:
 				lastWasSpace = false;
 				break;

@@ -67,6 +67,18 @@ void BetaComment::CPrint(const char* a_fmt, ...)
 	}
 }
 
+const char* BetaComment::GetFormEditorID(RE::TESForm* a_form)
+{
+	auto hndl = GetModuleHandleA("po3_Tweaks");
+	auto func = reinterpret_cast<const char* (*)(std::uint32_t)>(GetProcAddress(hndl, "GetFormEditorID"));
+	if (func)
+	{
+		return func(a_form->formID);
+	}
+
+	return a_form->GetFormEditorID();
+}
+
 const char* BetaComment::HelpStr()
 {
 	static const std::string help = []()
@@ -196,7 +208,7 @@ bool BetaComment::PrintCellEditorID(Buffer& a_buf)
 		return false;
 	}
 
-	std::string editorID(stl::safe_string(cell->GetFormEditorID()));
+	std::string editorID{ stl::safe_string(GetFormEditorID(cell)) };
 	if (editorID.empty())
 	{
 		return false;
@@ -224,7 +236,7 @@ bool BetaComment::PrintRefCoordinates(Buffer& a_buf)
 
 bool BetaComment::PrintRefEditorID(Buffer& a_buf)
 {
-	std::string editorID{ stl::safe_string(_ref->GetFormEditorID()) };
+	std::string editorID{ stl::safe_string(GetFormEditorID(_ref)) };
 	if (editorID.empty())
 	{
 		return false;

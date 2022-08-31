@@ -18,6 +18,7 @@ private:
 	BetaComment& operator=(BetaComment&&) = delete;
 
 	static void CPrint(const char* a_fmt, ...);
+	static const char* GetFormEditorID(RE::TESForm* a_form);
 	static const char* HelpStr();
 	static void Init();
 	static void LogComment(const std::string& a_comment);

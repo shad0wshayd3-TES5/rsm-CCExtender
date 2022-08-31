@@ -28,13 +28,16 @@ auto SelectedRefColor::ProcessMessage(RE::IMenu* a_menu, RE::UIMessage& a_messag
 				return result;
 			}
 			break;
+
 		case MessageType::kShow:
 			UpdateRef();
 			SetColor();
 			break;
+
 		case MessageType::kHide:
 			ClearColor();
 			break;
+
 		default:
 			break;
 	}
@@ -46,12 +49,13 @@ void SelectedRefColor::ClearColor()
 {
 	auto task = SKSE::GetTaskInterface();
 	auto ref = _cachedRef;
-	task->AddTask([ref]()
-	              {
-		auto obj3D = ref ? ref->Get3D() : nullptr;
-		if (obj3D) {
-			RE::NiColorA color{ 0.0F, 0.0F, 0.0F, 0.0F };
-			obj3D->TintScenegraph(color);
+	task->AddTask(
+		[ref]()
+		{
+			auto obj3D = ref ? ref->Get3D() : nullptr;
+			if (obj3D) {
+				RE::NiColorA color{ 0.0F, 0.0F, 0.0F, 0.0F };
+				obj3D->TintScenegraph(color);
 		} });
 }
 
@@ -59,11 +63,12 @@ void SelectedRefColor::SetColor()
 {
 	auto task = SKSE::GetTaskInterface();
 	auto ref = _cachedRef;
-	task->AddTask([ref]()
-	              {
-		auto obj3D = ref ? ref->Get3D() : nullptr;
-		if (obj3D) {
-			obj3D->TintScenegraph(*Settings::consoleSelectedRefColor);
+	task->AddTask(
+		[ref]()
+		{
+			auto obj3D = ref ? ref->Get3D() : nullptr;
+			if (obj3D) {
+				obj3D->TintScenegraph(*Settings::consoleSelectedRefColor);
 		} });
 }
 
