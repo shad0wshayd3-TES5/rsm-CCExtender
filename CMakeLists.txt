@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 set(NAME "CCExtender")
-set(VERSION 1.10.0)
+set(VERSION 1.11.0)
 set(AE_VERSION 1)
 
 # ---- Options ----
