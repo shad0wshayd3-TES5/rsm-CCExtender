@@ -49,11 +49,11 @@ void BetaComment::Register()
 		info->editorFilter = false;
 		info->invalidatesCellList = false;
 
-		logger::info(FMT_STRING("Registered console command: {} ({})"sv), LONG_NAME, SHORT_NAME);
+		SKSE::log::info("Registered console command: {} ({})"sv, LONG_NAME, SHORT_NAME);
 	}
 	else
 	{
-		logger::error(FMT_STRING("Failed to register console command: {} ({})"sv), LONG_NAME, SHORT_NAME);
+		SKSE::log::error("Failed to register console command: {} ({})"sv, LONG_NAME, SHORT_NAME);
 	}
 }
 
@@ -104,8 +104,8 @@ const char* BetaComment::GetFormEditorID(RE::TESForm* a_form)
 
 		default:
 			{
-				auto hndl = GetModuleHandleA("po3_Tweaks");
-				auto func = reinterpret_cast<const char* (*)(std::uint32_t)>(GetProcAddress(hndl, "GetFormEditorID"));
+				auto hndl = REX::W32::GetModuleHandleA("po3_Tweaks");
+				auto func = reinterpret_cast<const char* (*)(std::uint32_t)>(REX::W32::GetProcAddress(hndl, "GetFormEditorID"));
 				if (func)
 				{
 					return func(a_form->formID);
@@ -134,12 +134,12 @@ void BetaComment::Init()
 {
 	constexpr auto USERNAME_SIZE = std::extent<decltype(_userName)>::value;
 
-	DWORD tmpSize = USERNAME_SIZE;
-	if (!GetUserNameA(_userName, &tmpSize))
-	{
-		logger::error(FMT_STRING("Failed to get username with error code ({})"sv), GetLastError());
+//	DWORD tmpSize = USERNAME_SIZE;
+//	if (!REX::W32::GetUserNameA(_userName, &tmpSize))
+//	{
+//		SKSE::log::error("Failed to get username with error code ({})"sv, GetLastError());
 		strcpy_s(_userName, USERNAME_SIZE, "SEE-LOG-FOR-ERROR");
-	}
+//	}
 }
 
 void BetaComment::LogComment(const std::string& a_comment)

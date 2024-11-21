@@ -38,5 +38,5 @@ private:
 	static constexpr char _DELIM{ '\t' };
 	inline static std::ofstream _file{};
 	inline static RE::TESObjectREFR* _ref{ nullptr };
-	inline static CHAR _userName[UNLEN + 1]{ '\0' };
+	inline static CHAR _userName[261]{ '\0' };
 };

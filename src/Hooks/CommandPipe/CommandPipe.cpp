@@ -6,7 +6,7 @@ void CommandPipe::InstallHooks()
 	auto& trampoline = SKSE::GetTrampoline();
 	_CompileAndRun = trampoline.write_call<5>(hookPoint.address(), CompileAndRun);
 
-	logger::info(FMT_STRING("Installed hooks for class ({})"sv), typeid(CommandPipe).name());
+	SKSE::log::info("Installed hooks for class ({})"sv, typeid(CommandPipe).name());
 }
 
 void CommandPipe::CompileAndRun(RE::Script* a_script, RE::ScriptCompiler* a_compiler, RE::COMPILER_NAME a_name, RE::TESObjectREFR* a_targetRef)

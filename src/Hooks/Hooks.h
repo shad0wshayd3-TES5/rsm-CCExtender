@@ -9,6 +9,6 @@ namespace Hooks
 	{
 		CommandPipe::InstallHooks();
 		SelectedRefColor::InstallHooks();
-		logger::info("Installed all hooks"sv);
+		SKSE::log::info("Installed all hooks"sv);
 	}
 }

@@ -4,7 +4,7 @@ void SelectedRefColor::InstallHooks()
 {
 	REL::Relocation<std::uintptr_t> vtbl{ RE::VTABLE_Console[0] };  // Console vtbl
 	_processMessage = vtbl.write_vfunc(0x4, ProcessMessage);
-	logger::info(FMT_STRING("Installed hooks for {}"sv), typeid(SelectedRefColor).name());
+	SKSE::log::info("Installed hooks for {}"sv, typeid(SelectedRefColor).name());
 }
 
 auto SelectedRefColor::ProcessMessage(RE::IMenu* a_menu, RE::UIMessage& a_message)

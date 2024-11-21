@@ -29,11 +29,11 @@ void Clear::Register()
 		info->executeFunction = &Exec;
 		info->conditionFunction = nullptr;
 
-		logger::info(FMT_STRING("Registered console command: {} ({})"sv), LONG_NAME, SHORT_NAME);
+		SKSE::log::info("Registered console command: {} ({})"sv, LONG_NAME, SHORT_NAME);
 	}
 	else
 	{
-		logger::error(FMT_STRING("Failed to register console command: {} ({})"sv), LONG_NAME, SHORT_NAME);
+		SKSE::log::error("Failed to register console command: {} ({})"sv, LONG_NAME, SHORT_NAME);
 	}
 }
 
