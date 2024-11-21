@@ -14,32 +14,32 @@ auto SelectedRefColor::ProcessMessage(RE::IMenu* a_menu, RE::UIMessage& a_messag
 
 	switch (*a_message.type)
 	{
-		case MessageType::kUpdate:
-		case MessageType::kScaleformEvent:
-			if (a_menu->OnStack())
+	case MessageType::kUpdate:
+	case MessageType::kScaleformEvent:
+		if (a_menu->OnStack())
+		{
+			const auto result = _processMessage(a_menu, a_message);
+			if (_cachedRef != RE::Console::GetSelectedRef())
 			{
-				const auto result = _processMessage(a_menu, a_message);
-				if (_cachedRef != RE::Console::GetSelectedRef())
-				{
-					ClearColor();
-					UpdateRef();
-					SetColor();
-				}
-				return result;
+				ClearColor();
+				UpdateRef();
+				SetColor();
 			}
-			break;
+			return result;
+		}
+		break;
 
-		case MessageType::kShow:
-			UpdateRef();
-			SetColor();
-			break;
+	case MessageType::kShow:
+		UpdateRef();
+		SetColor();
+		break;
 
-		case MessageType::kHide:
-			ClearColor();
-			break;
+	case MessageType::kHide:
+		ClearColor();
+		break;
 
-		default:
-			break;
+	default:
+		break;
 	}
 
 	return _processMessage(a_menu, a_message);

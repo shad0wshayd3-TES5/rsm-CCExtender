@@ -35,7 +35,7 @@ void SetPerkPoints::Register()
 	if (info)
 	{
 		static RE::SCRIPT_PARAMETER params[] = {
-			{ "Integer", Type::kInt, 1 }
+			{"Integer", Type::kInt, 1}
 		};
 
 		info->functionName = LONG_NAME;

@@ -54,88 +54,88 @@ bool CommandPipe::Parse(std::string& a_command, std::optional<std::string>& a_fi
 	{
 		switch (a_command[i])
 		{
-			case '>':
-				if (!lastWasSpace)
-				{
-					break;
-				}
-				else if (i + 1 >= a_command.length() || a_command[i + 1] != ' ')
-				{
-					CPrint("ERROR: Expected space following pipe");
-					return false;
-				}
+		case '>':
+			if (!lastWasSpace)
+			{
+				break;
+			}
+			else if (i + 1 >= a_command.length() || a_command[i + 1] != ' ')
+			{
+				CPrint("ERROR: Expected space following pipe");
+				return false;
+			}
 
-				for (std::size_t j = i + 2; j < a_command.length(); ++j)
+			for (std::size_t j = i + 2; j < a_command.length(); ++j)
+			{
+				switch (a_command[j])
 				{
-					switch (a_command[j])
+				case '\"':
+				{
+					if (!std::isalnum(a_command[++j]))
 					{
-						case '\"':
-							{
-								if (!std::isalnum(a_command[++j]))
-								{
-									CPrint("ERROR: Expected file name");
-									return false;
-								}
+						CPrint("ERROR: Expected file name");
+						return false;
+					}
 
-								std::size_t k = j;
-								do
-								{
-									++k;
-								}
-								while (k < a_command.length() && a_command[k] != '\"');
+					std::size_t k = j;
+					do
+					{
+						++k;
+					}
+					while (k < a_command.length() && a_command[k] != '\"');
 
-								if (k >= a_command.length())
-								{
-									CPrint("ERROR: Expected '\"' before end of line");
-									return false;
-								}
-								else
-								{
-									std::string result(a_command, j, k - j);
-									a_command.erase(i - 1);
-									a_fileName = std::make_optional(std::move(result));
-									return true;
-								}
-							}
-							break;
-
-						default:
-							if (std::isalnum(a_command[j]))
-							{
-								std::size_t k = j;
-								do
-								{
-									++k;
-								}
-								while (k < a_command.length() && std::isalnum(a_command[k]));
-
-								if (k < a_command.length())
-								{
-									CPrint("ERROR: Expected end of line");
-									return false;
-								}
-								else
-								{
-									std::string result(a_command, j, k - j);
-									a_command.erase(i - 1);
-									a_fileName = std::make_optional(std::move(result));
-									return true;
-								}
-							}
-							break;
+					if (k >= a_command.length())
+					{
+						CPrint("ERROR: Expected '\"' before end of line");
+						return false;
+					}
+					else
+					{
+						std::string result(a_command, j, k - j);
+						a_command.erase(i - 1);
+						a_fileName = std::make_optional(std::move(result));
+						return true;
 					}
 				}
-
-				CPrint("ERROR: Expected expression following pipe");
-				return false;
-
-			case ' ':
-				lastWasSpace = true;
 				break;
 
-			default:
-				lastWasSpace = false;
-				break;
+				default:
+					if (std::isalnum(a_command[j]))
+					{
+						std::size_t k = j;
+						do
+						{
+							++k;
+						}
+						while (k < a_command.length() && std::isalnum(a_command[k]));
+
+						if (k < a_command.length())
+						{
+							CPrint("ERROR: Expected end of line");
+							return false;
+						}
+						else
+						{
+							std::string result(a_command, j, k - j);
+							a_command.erase(i - 1);
+							a_fileName = std::make_optional(std::move(result));
+							return true;
+						}
+					}
+					break;
+				}
+			}
+
+			CPrint("ERROR: Expected expression following pipe");
+			return false;
+
+		case ' ':
+			lastWasSpace = true;
+			break;
+
+		default:
+			lastWasSpace = false;
+			break;
 		}
 	}
 	return true;
