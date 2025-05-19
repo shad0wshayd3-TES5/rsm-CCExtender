@@ -1,8 +1,8 @@
--- set xmake version
-set_xmakever("2.9.4")
+-- set minimum xmake version
+set_xmakever("2.8.2")
 
--- include local folders
-includes("extern/commonlibsse")
+-- includes
+includes("lib/commonlibsse")
 
 -- set project
 set_project("CCExtender")
@@ -10,26 +10,24 @@ set_version("1.13.0")
 set_license("MIT")
 
 -- set defaults
-set_arch("x64")
 set_languages("c++23")
-set_optimize("faster")
-set_warnings("allextra", "error")
-set_defaultmode("releasedbg")
-
--- enable lto
-set_policy("build.optimization.lto", true)
+set_warnings("allextra")
 
 -- add rules
 add_rules("mode.debug", "mode.releasedbg")
 add_rules("plugin.vsxmake.autoupdate")
 
--- add config
+-- set policies
+set_policy("build.optimization.lto", true)
+set_policy("package.requires_lock", true)
+
+-- set configs
 set_config("rex_json", true)
 set_config("skyrim_ae", true)
 
--- setup targets
+-- targets
 target("CCExtender")
-    -- bind local dependencies
+    -- add dependencies to target
     add_deps("commonlibsse")
 
     -- add commonlibsse plugin
@@ -38,11 +36,11 @@ target("CCExtender")
         author = "ryan-rsm-mckenzie"
     })
 
-    -- add source files
+    -- add src files
     add_files("src/**.cpp")
     add_headerfiles("src/**.h")
     add_includedirs("src")
-    set_pcxxheader("src/PCH.h")
+    set_pcxxheader("src/pch.h")
 
     -- add extra files
     add_extrafiles(".clang-format")
