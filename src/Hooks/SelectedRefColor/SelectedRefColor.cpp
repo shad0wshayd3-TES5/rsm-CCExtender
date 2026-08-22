@@ -1,10 +1,12 @@
 #include "SelectedRefColor.h"
 
+#include "Settings.h"
+
 void SelectedRefColor::InstallHooks()
 {
 	REL::Relocation<std::uintptr_t> vtbl{ RE::VTABLE_Console[0] };  // Console vtbl
 	_processMessage = vtbl.write_vfunc(0x4, ProcessMessage);
-	SKSE::log::info("Installed hooks for {}"sv, typeid(SelectedRefColor).name());
+	REX::INFO("Installed hooks for {}"sv, typeid(SelectedRefColor).name());
 }
 
 auto SelectedRefColor::ProcessMessage(RE::IMenu* a_menu, RE::UIMessage& a_message)
@@ -68,7 +70,7 @@ void SelectedRefColor::SetColor()
 		{
 			auto obj3D = ref ? ref->Get3D() : nullptr;
 			if (obj3D) {
-				obj3D->TintScenegraph(*Settings::consoleSelectedRefColor);
+				obj3D->TintScenegraph(Settings::consoleSelectedRefColor);
 		} });
 }
 

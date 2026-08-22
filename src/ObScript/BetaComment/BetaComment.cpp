@@ -1,8 +1,10 @@
 #include "BetaComment.h"
 
+#include "Settings.h"
+
 bool BetaComment::Exec(const RE::SCRIPT_PARAMETER*, RE::SCRIPT_FUNCTION::ScriptData* a_scriptData, RE::TESObjectREFR*, RE::TESObjectREFR*, RE::Script*, RE::ScriptLocals*, double&, std::uint32_t&)
 {
-	_file.open(*Settings::betaCommentFileName, std::ios_base::app);
+	_file.open(Settings::betaCommentFileName, std::ios_base::app);
 	if (!_file.is_open())
 	{
 		CPrint("> [%s] ERROR: Failed to open output file", LONG_NAME);
@@ -36,7 +38,7 @@ void BetaComment::Register()
 	if (info)
 	{
 		static RE::SCRIPT_PARAMETER params[] = {
-			{"String", Type::kChar, 0}
+			{ "String", Type::kChar, 0 }
 		};
 
 		info->functionName = LONG_NAME;
@@ -49,11 +51,11 @@ void BetaComment::Register()
 		info->editorFilter = false;
 		info->invalidatesCellList = false;
 
-		SKSE::log::info("Registered console command: {} ({})"sv, LONG_NAME, SHORT_NAME);
+		REX::INFO("Registered console command: {} ({})"sv, LONG_NAME, SHORT_NAME);
 	}
 	else
 	{
-		SKSE::log::error("Failed to register console command: {} ({})"sv, LONG_NAME, SHORT_NAME);
+		REX::ERROR("Failed to register console command: {} ({})"sv, LONG_NAME, SHORT_NAME);
 	}
 }
 
@@ -134,12 +136,12 @@ void BetaComment::Init()
 {
 	constexpr auto USERNAME_SIZE = std::extent<decltype(_userName)>::value;
 
-	//	DWORD tmpSize = USERNAME_SIZE;
-	//	if (!REX::W32::GetUserNameA(_userName, &tmpSize))
-	//	{
-	//		SKSE::log::error("Failed to get username with error code ({})"sv, GetLastError());
-	strcpy_s(_userName, USERNAME_SIZE, "SEE-LOG-FOR-ERROR");
-	//	}
+	std::uint32_t tmpSize = USERNAME_SIZE;
+	if (!REX::W32::GetUserNameA(_userName, &tmpSize))
+	{
+		REX::ERROR("Failed to get username with error code ({})"sv, REX::W32::GetLastError());
+		strcpy_s(_userName, USERNAME_SIZE, "SEE-LOG-FOR-ERROR");
+	}
 }
 
 void BetaComment::LogComment(const std::string& a_comment)
@@ -243,7 +245,7 @@ bool BetaComment::PrintCellEditorID(Buffer& a_buf)
 		return false;
 	}
 
-	std::string editorID{ stl::safe_string(GetFormEditorID(cell)) };
+	std::string editorID{ GetFormEditorID(cell) };
 	if (editorID.empty())
 	{
 		return false;
@@ -271,7 +273,7 @@ bool BetaComment::PrintRefCoordinates(Buffer& a_buf)
 
 bool BetaComment::PrintRefEditorID(Buffer& a_buf)
 {
-	std::string editorID{ stl::safe_string(GetFormEditorID(_ref)) };
+	std::string editorID{ GetFormEditorID(_ref) };
 	if (editorID.empty())
 	{
 		return false;
@@ -305,9 +307,9 @@ bool BetaComment::PrintSourceFile(Buffer& a_buf)
 
 bool BetaComment::PrintTime(Buffer& a_buf)
 {
-	auto time = std::time(nullptr);
+	auto    time = std::time(nullptr);
 	std::tm localTime;
-	auto err = gmtime_s(&localTime, &time);
+	auto    err = gmtime_s(&localTime, &time);
 	if (err)
 	{
 		return false;

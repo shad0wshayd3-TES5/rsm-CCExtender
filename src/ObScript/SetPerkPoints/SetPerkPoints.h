@@ -16,7 +16,7 @@ private:
 	SetPerkPoints& operator=(SetPerkPoints&&) = delete;
 
 	static const char* HelpStr();
-	static void CPrint(const char* a_fmt, ...);
+	static void        CPrint(const char* a_fmt, ...);
 
 	static constexpr char LONG_NAME[] = "SetPerkPoints";
 	static constexpr char SHORT_NAME[] = "SPP";

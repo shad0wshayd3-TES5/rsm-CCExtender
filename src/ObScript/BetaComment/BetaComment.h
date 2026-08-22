@@ -17,11 +17,11 @@ private:
 	BetaComment& operator=(const BetaComment&) = delete;
 	BetaComment& operator=(BetaComment&&) = delete;
 
-	static void CPrint(const char* a_fmt, ...);
+	static void        CPrint(const char* a_fmt, ...);
 	static const char* GetFormEditorID(RE::TESForm* a_form);
 	static const char* HelpStr();
-	static void Init();
-	static void LogComment(const std::string& a_comment);
+	static void        Init();
+	static void        LogComment(const std::string& a_comment);
 
 	static bool PrintCellCoordinates(Buffer& a_buf);
 	static bool PrintCellEditorID(Buffer& a_buf);
@@ -33,10 +33,10 @@ private:
 	static bool PrintTime(Buffer& a_buf);
 	static bool PrintUserName(Buffer& a_buf);
 
-	static constexpr char LONG_NAME[] = "BetaComment";
-	static constexpr char SHORT_NAME[] = "BC";
-	static constexpr char _DELIM{ '\t' };
-	inline static std::ofstream _file{};
+	static constexpr char            LONG_NAME[] = "BetaComment";
+	static constexpr char            SHORT_NAME[] = "BC";
+	static constexpr char            _DELIM{ '\t' };
+	inline static std::ofstream      _file{};
 	inline static RE::TESObjectREFR* _ref{ nullptr };
-	inline static CHAR _userName[261]{ '\0' };
+	inline static char               _userName[261]{ '\0' };
 };

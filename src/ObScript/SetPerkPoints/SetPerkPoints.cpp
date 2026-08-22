@@ -35,7 +35,7 @@ void SetPerkPoints::Register()
 	if (info)
 	{
 		static RE::SCRIPT_PARAMETER params[] = {
-			{"Integer", Type::kInt, 1}
+			{ "Integer", Type::kInt, 1 }
 		};
 
 		info->functionName = LONG_NAME;
@@ -46,11 +46,11 @@ void SetPerkPoints::Register()
 		info->executeFunction = Exec;
 		info->conditionFunction = nullptr;
 
-		SKSE::log::info("Registered console command: {} ({})"sv, LONG_NAME, SHORT_NAME);
+		REX::INFO("Registered console command: {} ({})"sv, LONG_NAME, SHORT_NAME);
 	}
 	else
 	{
-		SKSE::log::error("Failed to register console command: {} ({})"sv, LONG_NAME, SHORT_NAME);
+		REX::ERROR("Failed to register console command: {} ({})"sv, LONG_NAME, SHORT_NAME);
 	}
 }
 

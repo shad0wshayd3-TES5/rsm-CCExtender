@@ -4,12 +4,12 @@ bool Clear::Exec(const RE::SCRIPT_PARAMETER*, RE::SCRIPT_FUNCTION::ScriptData*, 
 {
 	auto task = SKSE::GetTaskInterface();
 	task->AddUITask([]()
-	                {
-		auto ui = RE::UI::GetSingleton();
-		auto console = ui ? ui->GetMenu<RE::Console>() : nullptr;
-		auto view = console ? console->uiMovie : nullptr;
-		if (view) {
-			view->Invoke("Console.ClearHistory", nullptr, nullptr, 0);
+		{
+			auto ui = RE::UI::GetSingleton();
+			auto console = ui ? ui->GetMenu<RE::Console>() : nullptr;
+			auto view = console ? console->uiMovie : nullptr;
+			if (view) {
+				view->Invoke("Console.ClearHistory", nullptr, nullptr, 0);
 		} });
 
 	return true;
@@ -29,11 +29,11 @@ void Clear::Register()
 		info->executeFunction = &Exec;
 		info->conditionFunction = nullptr;
 
-		SKSE::log::info("Registered console command: {} ({})"sv, LONG_NAME, SHORT_NAME);
+		REX::INFO("Registered console command: {} ({})"sv, LONG_NAME, SHORT_NAME);
 	}
 	else
 	{
-		SKSE::log::error("Failed to register console command: {} ({})"sv, LONG_NAME, SHORT_NAME);
+		REX::ERROR("Failed to register console command: {} ({})"sv, LONG_NAME, SHORT_NAME);
 	}
 }
 

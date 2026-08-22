@@ -1,44 +1,21 @@
 #pragma once
 
-namespace RE
+namespace REX::JSON
 {
-	inline void from_json(const nlohmann::json& a_json, RE::NiColorA& a_color)
-	{
-		using value_t = nlohmann::json::value_t;
-
-		const std::array names{
-			"red"s,
-			"green"s,
-			"blue"s,
-			"alpha"s
-		};
-
-		for (std::size_t i = 0; i < names.size(); ++i)
-		{
-			a_color[i] = a_json.at(names[i]).get<float>();
-			a_color[i] = std::clamp(a_color[i], 0.0F, 1.0F);
-		}
-	}
+	using ColorA = TJsonSetting<RE::NiColorA>;
 }
 
-class Settings
+namespace Settings
 {
-public:
-	Settings() = delete;
+	static REX::JSON::Str    betaCommentFileName{ "betaCommentFileName"sv, "betacomments.txt"s };
+	static REX::JSON::ColorA consoleSelectedRefColor{ "consoleSelectedRefColor"sv, { 0.51F, 0.61F, 0.62F, 0.5F } };
 
-	inline static bool LoadSettings(bool a_dumpParse = false)
+	inline void Load()
 	{
-		auto [log, success] = Json2Settings::load_settings(FILE_NAME, a_dumpParse);
-		if (!log.empty())
-		{
-			logger::error{ fmt::runtime(log) };
-		}
-		return success;
+		auto json = REX::JSON::SettingStore::GetSingleton();
+		json->Init(
+			"Data/SKSE/Plugins/CCExtender.json",
+			"Data/SKSE/Plugins/CCExtenderCustom.json");
+		json->Load();
 	}
-
-	inline static Json2Settings::sSetting betaCommentFileName{ "betaCommentFileName", "betacomments.txt" };
-	inline static Json2Settings::oSetting<RE::NiColorA> consoleSelectedRefColor{ "consoleSelectedRefColor", std::in_place_t(), 0.51F, 0.61F, 0.62F, 0.5F };
-
-private:
-	inline static constexpr char FILE_NAME[] = "Data/SKSE/Plugins/CCExtender.json";
-};
+}

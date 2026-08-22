@@ -23,5 +23,5 @@ private:
 	static void UpdateRef();
 
 	inline static REL::Relocation<decltype(&RE::IMenu::ProcessMessage)> _processMessage{};
-	inline static RE::TESObjectREFRPtr _cachedRef{};
+	inline static RE::TESObjectREFRPtr                                  _cachedRef{};
 };

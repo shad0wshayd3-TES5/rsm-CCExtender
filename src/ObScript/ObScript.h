@@ -11,6 +11,6 @@ namespace ObScript
 		BetaComment::Register();
 		Clear::Register();
 		SetPerkPoints::Register();
-		SKSE::log::info("Registered all console commands"sv);
+		REX::INFO("Registered all console commands"sv);
 	}
 }
