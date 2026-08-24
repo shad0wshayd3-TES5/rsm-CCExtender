@@ -14,6 +14,7 @@ add_rules("plugin.vsxmake.autoupdate")
 
 -- set configs
 set_config("commonlib_json", true)
+set_config("commonlib_xbyak", true)
 
 -- define targets
 target("CCExtender")
@@ -30,3 +31,6 @@ target("CCExtender")
 
     -- add extra files
     add_extrafiles(".clang-format")
+
+    -- add install files
+    add_installfiles("res/*.json", { prefixdir = "SKSE/Plugins" })
