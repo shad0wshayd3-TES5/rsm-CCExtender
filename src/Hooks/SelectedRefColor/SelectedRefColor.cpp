@@ -49,29 +49,38 @@ auto SelectedRefColor::ProcessMessage(RE::IMenu* a_menu, RE::UIMessage& a_messag
 
 void SelectedRefColor::ClearColor()
 {
-	auto task = SKSE::GetTaskInterface();
-	auto ref = _cachedRef;
-	task->AddTask(
-		[ref]()
+	auto         refr = _cachedRef;
+	RE::NiColorA tint{ 0.0f, 0.0f, 0.0f, 0.0f };
+
+	SKSE::GetTaskInterface()->AddTask(
+		[refr, tint]()
 		{
-			auto obj3D = ref ? ref->Get3D() : nullptr;
-			if (obj3D) {
-				RE::NiColorA color{ 0.0F, 0.0F, 0.0F, 0.0F };
-				obj3D->TintScenegraph(color);
-		} });
+			if (refr)
+			{
+				if (auto root = refr->Get3D())
+				{
+					root->TintScenegraph(tint);
+				}
+			}
+		});
 }
 
 void SelectedRefColor::SetColor()
 {
-	auto task = SKSE::GetTaskInterface();
-	auto ref = _cachedRef;
-	task->AddTask(
-		[ref]()
+	auto         refr = _cachedRef;
+	RE::NiColorA tint = Settings::consoleSelectedRefColor;
+
+	SKSE::GetTaskInterface()->AddTask(
+		[refr, tint]()
 		{
-			auto obj3D = ref ? ref->Get3D() : nullptr;
-			if (obj3D) {
-				obj3D->TintScenegraph(Settings::consoleSelectedRefColor);
-		} });
+			if (refr)
+			{
+				if (auto root = refr->Get3D())
+				{
+					root->TintScenegraph(tint);
+				}
+			}
+		});
 }
 
 void SelectedRefColor::UpdateRef()
